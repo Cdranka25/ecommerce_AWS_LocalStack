@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TechShop — E-commerce Distribuído</title>
+<style>
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--border:#30363d;
+  --text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;
+  --green:#3fb950;--red:#f85149;--amber:#d29922;--purple:#bc8cff;
+  --teal:#39d353;--card:#0d1117;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh}
+
+/* ── NAV ── */
+nav{background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:0 2rem;display:flex;align-items:center;justify-content:space-between;
+  height:56px;position:sticky;top:0;z-index:100}
+.nav-brand{font-size:1.1rem;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:8px}
+.nav-brand span{font-size:18px}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-btn{background:none;border:1px solid transparent;color:var(--muted);
+  padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;
+  font-family:var(--sans);transition:all .15s}
+.nav-btn:hover{color:var(--text);background:var(--bg3);border-color:var(--border)}
+.nav-btn.primary{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.nav-btn.primary:hover{background:#388bfd}
+.cart-badge{background:var(--red);color:#fff;border-radius:20px;
+  font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px}
+
+/* ── PAGES ── */
+.page{display:none;min-height:calc(100vh - 56px)}
+.page.active{display:block}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#0d1117 0%,#161b22 50%,#0d1117 100%);
+  padding:4rem 2rem 3rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(88,166,255,.1) 0%,transparent 70%);
+  pointer-events:none}
+.hero h1{font-size:clamp(1.8rem,5vw,3rem);font-weight:700;color:#fff;margin-bottom:.75rem}
+.hero p{color:var(--muted);font-size:1rem;max-width:480px;margin:0 auto 2rem}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ── CARDS GRID ── */
+.section{max-width:1100px;margin:0 auto;padding:2rem}
+.section-title{font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.25rem}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;transition:border-color .2s,transform .15s;cursor:pointer}
+.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.card-img{width:100%;height:160px;object-fit:cover;background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;font-size:48px;color:var(--border)}
+.card-img img{width:100%;height:100%;object-fit:cover}
+.card-body{padding:1rem}
+.card-categoria{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  color:var(--accent);margin-bottom:4px}
+.card-nome{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:4px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-desc{font-size:.8rem;color:var(--muted);margin-bottom:.75rem;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-footer{display:flex;align-items:center;justify-content:space-between}
+.card-preco{font-size:1.1rem;font-weight:700;color:var(--green)}
+.card-estoque{font-size:11px;color:var(--muted)}
+.btn-add{background:var(--accent2);color:#fff;border:none;border-radius:6px;
+  padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);
+  transition:background .15s}
+.btn-add:hover{background:#388bfd}
+.btn-add:disabled{background:var(--bg3);color:var(--muted);cursor:not-allowed}
+
+/* ── CARRINHO ── */
+.cart-page{max-width:800px;margin:0 auto;padding:2rem}
+.cart-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  padding:1rem;margin-bottom:.75rem;display:flex;gap:1rem;align-items:center}
+.cart-item-info{flex:1}
+.cart-item-nome{font-weight:600;color:#fff;font-size:.95rem}
+.cart-item-preco{color:var(--muted);font-size:.85rem;margin-top:2px}
+.cart-qty{display:flex;align-items:center;gap:8px}
+.qty-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text);
+  width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;font-family:var(--sans)}
+.qty-btn:hover{border-color:var(--accent)}
+.cart-total-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-top:1rem}
+.total-row{display:flex;justify-content:space-between;padding:6px 0;
+  border-bottom:1px solid var(--border);font-size:.9rem;color:var(--muted)}
+.total-row:last-child{border-bottom:none;font-size:1.1rem;font-weight:700;color:#fff;padding-top:12px}
+.total-row span:last-child{color:var(--green)}
+
+/* ── FRETE BOX ── */
+.frete-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  padding:1rem;margin:1rem 0}
+.frete-titulo{font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.5px}
+.frete-opcao{display:flex;align-items:center;gap:10px;padding:8px 0;
+  border-bottom:1px solid var(--border);cursor:pointer}
+.frete-opcao:last-child{border-bottom:none}
+.frete-opcao input{accent-color:var(--accent)}
+.frete-nome{font-size:.9rem;font-weight:600;color:#fff}
+.frete-prazo{font-size:.8rem;color:var(--muted)}
+.frete-valor{margin-left:auto;font-weight:700;color:var(--green)}
+.frete-simulado{font-size:10px;color:var(--amber);margin-left:4px}
+
+/* ── ENDEREÇOS ── */
+.enderecos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1.5rem}
+.end-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  padding:1rem;cursor:pointer;transition:border-color .15s;position:relative}
+.end-card:hover{border-color:var(--accent)}
+.end-card.selected{border-color:var(--accent);background:rgba(88,166,255,.05)}
+.end-apelido{font-weight:700;color:#fff;font-size:.95rem;margin-bottom:4px;
+  display:flex;align-items:center;gap:6px}
+.badge-principal{font-size:10px;background:rgba(88,166,255,.15);color:var(--accent);
+  border:1px solid rgba(88,166,255,.3);border-radius:10px;padding:1px 8px;font-weight:600}
+.end-logr{color:var(--muted);font-size:.85rem;line-height:1.5}
+.end-delete{position:absolute;top:8px;right:8px;background:none;border:none;
+  color:var(--muted);cursor:pointer;font-size:16px;padding:4px;border-radius:4px}
+.end-delete:hover{color:var(--red)}
+
+/* ── FORM ── */
+.form-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem}
+.form-title{font-size:1rem;font-weight:700;color:#fff;margin-bottom:1.25rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.form-grid.full{grid-template-columns:1fr}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select{background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);border-radius:6px;padding:8px 12px;font-size:.9rem;
+  font-family:var(--sans);transition:border-color .15s;width:100%}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent)}
+.field input::placeholder{color:var(--border)}
+.form-actions{margin-top:1.25rem;display:flex;gap:.75rem;flex-wrap:wrap}
+
+/* ── BOTÕES ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;
+  border-radius:8px;font-size:.875rem;font-weight:600;cursor:pointer;
+  border:1px solid var(--border);background:var(--bg3);color:var(--text);
+  font-family:var(--sans);transition:all .15s}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn-primary{background:var(--accent2);border-color:var(--accent2);color:#fff}
+.btn-primary:hover{background:#388bfd;border-color:#388bfd;color:#fff}
+.btn-danger{border-color:var(--red);color:var(--red)}
+.btn-danger:hover{background:rgba(248,81,73,.1)}
+.btn-green{background:#1a7f37;border-color:#1a7f37;color:#fff}
+.btn-green:hover{background:#238636}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── AUTH PAGE ── */
+.auth-wrap{max-width:400px;margin:3rem auto;padding:1rem}
+.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:2rem}
+.auth-title{font-size:1.4rem;font-weight:700;color:#fff;text-align:center;margin-bottom:.5rem}
+.auth-sub{color:var(--muted);text-align:center;font-size:.875rem;margin-bottom:1.5rem}
+.auth-tabs{display:flex;gap:4px;background:var(--bg3);border-radius:8px;padding:4px;margin-bottom:1.5rem}
+.auth-tab{flex:1;text-align:center;padding:7px;border-radius:6px;cursor:pointer;
+  font-size:.85rem;font-weight:600;color:var(--muted);transition:all .15s}
+.auth-tab.active{background:var(--bg2);color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.auth-field{margin-bottom:.75rem}
+.auth-field label{display:block;font-size:12px;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.auth-field input{width:100%;background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);border-radius:8px;padding:10px 12px;font-size:.9rem;font-family:var(--sans)}
+.auth-field input:focus{outline:none;border-color:var(--accent)}
+.auth-error{color:var(--red);font-size:.8rem;margin-bottom:.75rem;
+  background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.2);
+  border-radius:6px;padding:8px 12px}
+.auth-success{color:var(--green);font-size:.8rem;margin-bottom:.75rem;
+  background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.2);
+  border-radius:6px;padding:8px 12px}
+
+/* ── PEDIDOS PAGE ── */
+.pedido-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  padding:1.25rem;margin-bottom:.75rem}
+.pedido-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem}
+.pedido-id{font-size:.75rem;color:var(--muted);font-family:monospace}
+.pedido-nome{font-size:.95rem;font-weight:600;color:#fff;margin-top:2px}
+.pedido-footer{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;
+  padding-top:.75rem;border-top:1px solid var(--border)}
+.pedido-total{font-size:1rem;font-weight:700;color:var(--green)}
+.status-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.5px}
+.status-PENDENTE{background:rgba(210,153,34,.15);color:var(--amber);border:1px solid rgba(210,153,34,.3)}
+.status-EM_TRANSITO{background:rgba(88,166,255,.15);color:var(--accent);border:1px solid rgba(88,166,255,.3)}
+.status-CONCLUIDO{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3)}
+.eventos-lista{margin-top:.75rem;border-top:1px solid var(--border);padding-top:.75rem}
+.evento{display:flex;gap:.75rem;padding:4px 0;font-size:.8rem}
+.evento-servico{width:90px;color:var(--accent);font-weight:600;text-transform:uppercase;font-size:.7rem;flex-shrink:0}
+.evento-status{width:80px;color:var(--green);font-weight:600;flex-shrink:0}
+.evento-msg{color:var(--muted);flex:1}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:12px 18px;font-size:.875rem;color:var(--text);
+  box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:9999;
+  transform:translateY(80px);opacity:0;transition:all .25s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-color:var(--green)}
+.toast.error{border-color:var(--red)}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:4rem 2rem;color:var(--muted)}
+.empty-icon{font-size:3rem;margin-bottom:1rem}
+.empty-text{font-size:.95rem}
+
+/* ── SPINNER ── */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);
+  border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-overlay{display:flex;align-items:center;justify-content:center;
+  gap:10px;padding:3rem;color:var(--muted);font-size:.9rem}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);
+  display:flex;align-items:center;justify-content:center;z-index:200;
+  opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+  padding:1.75rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.modal-title{font-size:1.1rem;font-weight:700;color:#fff}
+.modal-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px}
+.modal-close:hover{background:var(--bg3);color:var(--text)}
+
+@media(max-width:600px){
+  .form-grid{grid-template-columns:1fr}
+  .hero{padding:2.5rem 1rem 2rem}
+  .section{padding:1rem}
+  nav{padding:0 1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-brand"><span>🛒</span> TechShop</div>
+  <div class="nav-links" id="nav-links">
+    <button class="nav-btn" onclick="showPage('produtos')">Produtos</button>
+    <button class="nav-btn" id="nav-enderecos" style="display:none" onclick="showPage('enderecos')">Endereços</button>
+    <button class="nav-btn" id="nav-pedidos" style="display:none" onclick="showPage('pedidos')">Meus Pedidos</button>
+    <button class="nav-btn" onclick="showPage('carrinho')">
+      🛒 Carrinho <span class="cart-badge" id="cart-badge">0</span>
+    </button>
+    <button class="nav-btn primary" id="btn-auth" onclick="showPage('auth')">Entrar</button>
+    <button class="nav-btn" id="btn-logout" style="display:none" onclick="logout()">Sair</button>
+    <span id="nav-user" style="font-size:12px;color:var(--muted);margin-left:4px"></span>
+  </div>
+</nav>
+
+<!-- ══ PÁGINA: PRODUTOS ════════════════════════════════════ -->
+<div class="page active" id="page-produtos">
+  <div style="background:linear-gradient(135deg,#0d1117 0%,#161b22 50%,#0d1117 100%);
+    padding:3rem 2rem 2.5rem;text-align:center;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,
+      rgba(88,166,255,.1) 0%,transparent 70%);pointer-events:none"></div>
+    <h1 style="font-size:clamp(1.6rem,4vw,2.6rem);font-weight:700;color:#fff;margin-bottom:.5rem">
+      Tecnologia de ponta,<br>entregue até você
+    </h1>
+    <p style="color:var(--muted);max-width:440px;margin:0 auto .5rem">
+      Frete calculado pelos Correios em tempo real. Pagamento via PIX, Boleto ou Cartão.
+    </p>
+  </div>
+  <div class="section">
+    <div class="section-title">🖥️ Produtos disponíveis</div>
+    <div class="grid" id="grid-produtos">
+      <div class="loading-overlay"><div class="spinner"></div> Carregando produtos...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PÁGINA: AUTH ════════════════════════════════════════ -->
+<div class="page" id="page-auth">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-title">👤 Minha conta</div>
+      <div class="auth-sub">Entre ou crie sua conta para comprar</div>
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Entrar</div>
+        <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Criar conta</div>
+      </div>
+      <div id="auth-msg"></div>
+
+      <!-- LOGIN -->
+      <div id="form-login">
+        <div class="auth-field">
+          <label>E-mail</label>
+          <input type="email" id="login-email" placeholder="seu@email.com"/>
+        </div>
+        <div class="auth-field">
+          <label>Senha</label>
+          <input type="password" id="login-senha" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:.5rem;justify-content:center" onclick="doLogin()">
+          Entrar
+        </button>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="form-register" style="display:none">
+        <div class="auth-field">
+          <label>Nome completo</label>
+          <input type="text" id="reg-nome" placeholder="João da Silva"/>
+        </div>
+        <div class="auth-field">
+          <label>E-mail</label>
+          <input type="email" id="reg-email" placeholder="seu@email.com"/>
+        </div>
+        <div class="auth-field">
+          <label>Senha (mín. 6 caracteres)</label>
+          <input type="password" id="reg-senha" placeholder="••••••••"/>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:.5rem;justify-content:center" onclick="doRegister()">
+          Criar conta
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PÁGINA: CARRINHO ════════════════════════════════════ -->
+<div class="page" id="page-carrinho">
+  <div class="cart-page">
+    <div class="section-title">🛒 Carrinho</div>
+    <div id="cart-items"></div>
+    <div id="cart-checkout" style="display:none">
+      <!-- Seleção de endereço -->
+      <div class="form-card" style="margin-top:1.25rem">
+        <div class="form-title">📍 Endereço de entrega</div>
+        <div class="enderecos-grid" id="cart-enderecos"></div>
+        <button class="btn" onclick="showPage('enderecos')" style="font-size:12px">+ Cadastrar novo endereço</button>
+      </div>
+
+      <!-- Cálculo de frete -->
+      <div class="form-card" style="margin-top:1rem">
+        <div class="form-title">🚚 Opções de frete</div>
+        <div id="frete-resultado">
+          <p style="color:var(--muted);font-size:.875rem">Selecione um endereço para calcular o frete.</p>
+        </div>
+      </div>
+
+      <!-- Forma de pagamento -->
+      <div class="form-card" style="margin-top:1rem">
+        <div class="form-title">💳 Forma de pagamento</div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.5rem">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.875rem">
+            <input type="radio" name="pagto" value="pix" checked style="accent-color:var(--accent)"> PIX (instantâneo)
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.875rem">
+            <input type="radio" name="pagto" value="boleto" style="accent-color:var(--accent)"> Boleto Bancário
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.875rem">
+            <input type="radio" name="pagto" value="cartao_credito" style="accent-color:var(--accent)"> Cartão de Crédito
+          </label>
+        </div>
+      </div>
+
+      <!-- Resumo -->
+      <div class="cart-total-box" style="margin-top:1rem">
+        <div class="total-row"><span>Subtotal</span><span id="resumo-subtotal">R$ 0,00</span></div>
+        <div class="total-row"><span id="resumo-frete-label">Frete</span><span id="resumo-frete">—</span></div>
+        <div class="total-row"><span>Total</span><span id="resumo-total">—</span></div>
+      </div>
+      <button class="btn btn-green" style="width:100%;margin-top:1rem;justify-content:center;font-size:1rem;padding:12px"
+        onclick="finalizarPedido()" id="btn-finalizar">
+        ✅ Finalizar Pedido
+      </button>
+    </div>
+    <div id="cart-empty" class="empty" style="display:none">
+      <div class="empty-icon">🛒</div>
+      <div class="empty-text">Seu carrinho está vazio.</div>
+      <button class="btn btn-primary" style="margin-top:1rem" onclick="showPage('produtos')">Ver produtos</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PÁGINA: ENDEREÇOS ═══════════════════════════════════ -->
+<div class="page" id="page-enderecos">
+  <div class="section">
+    <div class="section-title">📍 Meus Endereços</div>
+    <div class="enderecos-grid" id="lista-enderecos"></div>
+    <div class="form-card">
+      <div class="form-title">Cadastrar novo endereço</div>
+      <div class="form-grid">
+        <div class="field"><label>Apelido</label><input id="end-apelido" placeholder="Casa, Trabalho..."/></div>
+        <div class="field">
+          <label>CEP</label>
+          <div style="display:flex;gap:6px">
+            <input id="end-cep" placeholder="00000-000" maxlength="9" oninput="formatCEP(this)" style="flex:1"/>
+            <button class="btn" onclick="buscarCEP()" style="white-space:nowrap;padding:8px 12px;font-size:12px">Buscar</button>
+          </div>
+        </div>
+        <div class="field" style="grid-column:1/-1"><label>Logradouro</label><input id="end-logr" placeholder="Rua, Avenida..."/></div>
+        <div class="field"><label>Número</label><input id="end-numero" placeholder="123"/></div>
+        <div class="field"><label>Complemento</label><input id="end-comp" placeholder="Apto 4B (opcional)"/></div>
+        <div class="field"><label>Bairro</label><input id="end-bairro" placeholder="Centro"/></div>
+        <div class="field"><label>Cidade</label><input id="end-cidade" placeholder="Blumenau"/></div>
+        <div class="field"><label>UF</label><input id="end-uf" placeholder="SC" maxlength="2" style="text-transform:uppercase"/></div>
+        <div class="field" style="grid-column:1/-1">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:normal;text-transform:none;letter-spacing:0">
+            <input type="checkbox" id="end-principal" style="accent-color:var(--accent)">
+            <span style="font-size:.875rem;color:var(--text)">Definir como endereço principal</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="salvarEndereco()">💾 Salvar endereço</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PÁGINA: PEDIDOS ═════════════════════════════════════ -->
+<div class="page" id="page-pedidos">
+  <div class="section">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+      <div class="section-title" style="margin:0">📦 Meus Pedidos</div>
+      <button class="btn" onclick="carregarPedidos()" style="font-size:12px">↻ Atualizar</button>
+    </div>
+    <div id="lista-pedidos"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL PRODUTO ═══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-produto">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-prod-nome">Produto</span>
+      <button class="modal-close" onclick="fecharModal()">✕</button>
+    </div>
+    <div id="modal-prod-img" style="margin-bottom:1rem;border-radius:8px;overflow:hidden;height:180px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:48px"></div>
+    <div style="color:var(--muted);font-size:.875rem;margin-bottom:1rem" id="modal-prod-desc"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
+      <div style="font-size:1.5rem;font-weight:700;color:var(--green)" id="modal-prod-preco"></div>
+      <div style="font-size:.8rem;color:var(--muted)" id="modal-prod-est"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+      <label style="font-size:.875rem;color:var(--muted)">Qtd:</label>
+      <div class="cart-qty">
+        <button class="qty-btn" onclick="ajustarQtdModal(-1)">−</button>
+        <span id="modal-qtd" style="min-width:24px;text-align:center;font-weight:600">1</span>
+        <button class="qty-btn" onclick="ajustarQtdModal(1)">+</button>
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="adicionarDoModal()">
+      🛒 Adicionar ao carrinho
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  CONFIGURAÇÃO
+// ═══════════════════════════════════════════════════════════
+const API = 'http://localhost:8000';
+
+// ── Estado global ──────────────────────────────────────────
+let token        = localStorage.getItem('token') || null;
+let userInfo     = JSON.parse(localStorage.getItem('userInfo') || 'null');
+let carrinho     = JSON.parse(localStorage.getItem('carrinho') || '[]');
+let enderecoSelecionado = null;
+let fretesSelecionado   = null;
+let produtoModal = null;
+let qtdModal     = 1;
+
+// ═══════════════════════════════════════════════════════════
+//  UTILITÁRIOS
+// ═══════════════════════════════════════════════════════════
+function R(v){ return `R$ ${Number(v).toFixed(2).replace('.',',')}` }
+function toast(msg, tipo=''){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${tipo} show`;
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.className='toast', 3200);
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(id==='produtos')   carregarProdutos();
+  if(id==='carrinho')   renderCarrinho();
+  if(id==='enderecos')  carregarEnderecos();
+  if(id==='pedidos')    carregarPedidos();
+}
+function authHeader(){ return {'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
+async function apiFetch(path, opts={}){
+  const r = await fetch(API+path, opts);
+  if(!r.ok){
+    const err = await r.json().catch(()=>({detail:'Erro desconhecido'}));
+    throw new Error(err.detail || r.statusText);
+  }
+  return r.json();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════════════════
+function switchAuthTab(tab){
+  document.getElementById('form-login').style.display    = tab==='login'    ? '' : 'none';
+  document.getElementById('form-register').style.display = tab==='register' ? '' : 'none';
+  document.getElementById('tab-login').className    = 'auth-tab'+(tab==='login'   ?' active':'');
+  document.getElementById('tab-register').className = 'auth-tab'+(tab==='register'?' active':'');
+  document.getElementById('auth-msg').innerHTML = '';
+}
+
+async function doLogin(){
+  const email = document.getElementById('login-email').value.trim();
+  const senha = document.getElementById('login-senha').value;
+  document.getElementById('auth-msg').innerHTML = '';
+  try {
+    const data = await apiFetch('/auth/login',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email, senha})
+    });
+    token    = data.access_token;
+    userInfo = data.user;
+    localStorage.setItem('token', token);
+    localStorage.setItem('userInfo', JSON.stringify(userInfo));
+    atualizarNavAuth();
+    toast(`Bem-vindo, ${userInfo.nome || userInfo.email}! 👋`, 'success');
+    showPage('produtos');
+  } catch(e){
+    document.getElementById('auth-msg').innerHTML = `<div class="auth-error">⚠️ ${e.message}</div>`;
+  }
+}
+
+async function doRegister(){
+  const nome  = document.getElementById('reg-nome').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const senha = document.getElementById('reg-senha').value;
+  document.getElementById('auth-msg').innerHTML = '';
+  try {
+    await apiFetch('/auth/register',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({nome, email, senha})
+    });
+    document.getElementById('auth-msg').innerHTML = `<div class="auth-success">✅ Conta criada! Faça login.</div>`;
+    switchAuthTab('login');
+    document.getElementById('login-email').value = email;
+  } catch(e){
+    document.getElementById('auth-msg').innerHTML = `<div class="auth-error">⚠️ ${e.message}</div>`;
+  }
+}
+
+async function logout(){
+  try{ await apiFetch('/auth/logout',{method:'POST',headers:authHeader()}) } catch(e){}
+  token=null; userInfo=null;
+  localStorage.removeItem('token');
+  localStorage.removeItem('userInfo');
+  atualizarNavAuth();
+  showPage('produtos');
+  toast('Logout realizado.');
+}
+
+function atualizarNavAuth(){
+  const logado = !!token;
+  document.getElementById('btn-auth').style.display     = logado ? 'none' : '';
+  document.getElementById('btn-logout').style.display   = logado ? '' : 'none';
+  document.getElementById('nav-enderecos').style.display= logado ? '' : 'none';
+  document.getElementById('nav-pedidos').style.display  = logado ? '' : 'none';
+  document.getElementById('nav-user').textContent       = logado ? (userInfo?.nome || userInfo?.email || '') : '';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PRODUTOS
+// ═══════════════════════════════════════════════════════════
+let produtos = [];
+async function carregarProdutos(){
+  const g = document.getElementById('grid-produtos');
+  g.innerHTML = '<div class="loading-overlay"><div class="spinner"></div> Carregando...</div>';
+  try {
+    produtos = await apiFetch('/produtos');
+    if(!produtos.length){
+      g.innerHTML = '<div class="empty"><div class="empty-icon">📦</div><div class="empty-text">Nenhum produto cadastrado.</div></div>';
+      return;
+    }
+    g.innerHTML = produtos.map(p => `
+      <div class="card" onclick="abrirModal('${p.id}')">
+        <div class="card-img">
+          ${p.imagem_url
+            ? `<img src="${p.imagem_url}" alt="${p.nome}" loading="lazy" onerror="this.parentNode.textContent='🖥️'">`
+            : '🖥️'}
+        </div>
+        <div class="card-body">
+          <div class="card-categoria">${p.categoria||'Geral'}</div>
+          <div class="card-nome">${p.nome}</div>
+          <div class="card-desc">${p.descricao||''}</div>
+          <div class="card-footer">
+            <div class="card-preco">${R(p.preco)}</div>
+            <button class="btn-add" ${p.estoque<1?'disabled':''} onclick="event.stopPropagation();addToCart('${p.id}',1)">
+              ${p.estoque<1?'Esgotado':'+ Carrinho'}
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e){
+    g.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">Erro: ${e.message}</div></div>`;
+  }
+}
+
+function abrirModal(prodId){
+  const p = produtos.find(x=>x.id===prodId);
+  if(!p) return;
+  produtoModal = p; qtdModal = 1;
+  document.getElementById('modal-prod-nome').textContent  = p.nome;
+  document.getElementById('modal-prod-desc').textContent  = p.descricao||'';
+  document.getElementById('modal-prod-preco').textContent = R(p.preco);
+  document.getElementById('modal-prod-est').textContent   = `${p.estoque} em estoque`;
+  document.getElementById('modal-qtd').textContent        = 1;
+  const imgDiv = document.getElementById('modal-prod-img');
+  imgDiv.innerHTML = p.imagem_url
+    ? `<img src="${p.imagem_url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.textContent='🖥️'">`
+    : '🖥️';
+  document.getElementById('modal-produto').classList.add('open');
+}
+function fecharModal(){ document.getElementById('modal-produto').classList.remove('open') }
+function ajustarQtdModal(d){
+  qtdModal = Math.max(1, Math.min(produtoModal?.estoque||99, qtdModal+d));
+  document.getElementById('modal-qtd').textContent = qtdModal;
+}
+function adicionarDoModal(){
+  addToCart(produtoModal.id, qtdModal);
+  fecharModal();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  CARRINHO
+// ═══════════════════════════════════════════════════════════
+function addToCart(prodId, qtd){
+  const p = produtos.find(x=>x.id===prodId);
+  if(!p) return;
+  const idx = carrinho.findIndex(x=>x.id===prodId);
+  if(idx>=0) carrinho[idx].qtd = Math.min(p.estoque, carrinho[idx].qtd+qtd);
+  else        carrinho.push({id:p.id, nome:p.nome, preco:p.preco, qtd, estoque:p.estoque, imagem_url:p.imagem_url});
+  salvarCarrinho();
+  toast(`${p.nome} adicionado ao carrinho 🛒`, 'success');
+}
+
+function salvarCarrinho(){
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  document.getElementById('cart-badge').textContent = carrinho.reduce((s,i)=>s+i.qtd,0);
+}
+
+function renderCarrinho(){
+  const itemsDiv    = document.getElementById('cart-items');
+  const checkoutDiv = document.getElementById('cart-checkout');
+  const emptyDiv    = document.getElementById('cart-empty');
+
+  if(!carrinho.length){
+    itemsDiv.innerHTML=''; checkoutDiv.style.display='none'; emptyDiv.style.display='';
+    return;
+  }
+  emptyDiv.style.display='none';
+  checkoutDiv.style.display='';
+
+  itemsDiv.innerHTML = carrinho.map((item,i) => `
+    <div class="cart-item">
+      <div style="width:48px;height:48px;border-radius:8px;overflow:hidden;background:var(--bg3);
+        flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px">
+        ${item.imagem_url
+          ? `<img src="${item.imagem_url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.textContent='🖥️'">`
+          : '🖥️'}
+      </div>
+      <div class="cart-item-info">
+        <div class="cart-item-nome">${item.nome}</div>
+        <div class="cart-item-preco">${R(item.preco)} × ${item.qtd} = <strong style="color:var(--green)">${R(item.preco*item.qtd)}</strong></div>
+      </div>
+      <div class="cart-qty">
+        <button class="qty-btn" onclick="alterarQtd(${i},-1)">−</button>
+        <span>${item.qtd}</span>
+        <button class="qty-btn" onclick="alterarQtd(${i},1)">+</button>
+        <button class="qty-btn" onclick="removerItem(${i})" style="color:var(--red);margin-left:4px">✕</button>
+      </div>
+    </div>
+  `).join('');
+
+  atualizarResumo();
+  if(token) carregarEnderecoCarrinho();
+  else document.getElementById('cart-enderecos').innerHTML =
+    '<p style="color:var(--muted);font-size:.875rem">Faça <a href="#" onclick="showPage(\'auth\')" style="color:var(--accent)">login</a> para selecionar endereço.</p>';
+}
+
+function alterarQtd(i, d){
+  carrinho[i].qtd = Math.max(1, Math.min(carrinho[i].estoque, carrinho[i].qtd+d));
+  salvarCarrinho(); renderCarrinho();
+}
+function removerItem(i){ carrinho.splice(i,1); salvarCarrinho(); renderCarrinho(); toast('Item removido.') }
+
+function atualizarResumo(){
+  const sub = carrinho.reduce((s,i)=>s+i.preco*i.qtd, 0);
+  document.getElementById('resumo-subtotal').textContent = R(sub);
+  if(fretesSelecionado){
+    const total = sub + fretesSelecionado.valor;
+    document.getElementById('resumo-frete-label').textContent = `Frete (${fretesSelecionado.servico})`;
+    document.getElementById('resumo-frete').textContent = R(fretesSelecionado.valor);
+    document.getElementById('resumo-total').textContent  = R(total);
+    if(fretesSelecionado.simulado)
+      document.getElementById('resumo-frete').innerHTML += ' <span style="font-size:10px;color:var(--amber)">(estimado)</span>';
+  } else {
+    document.getElementById('resumo-frete').textContent = '—';
+    document.getElementById('resumo-total').textContent = '—';
+  }
+}
+
+async function carregarEnderecoCarrinho(){
+  try{
+    const ends = await apiFetch('/enderecos',{headers:authHeader()});
+    const div  = document.getElementById('cart-enderecos');
+    if(!ends.length){
+      div.innerHTML = '<p style="color:var(--muted);font-size:.875rem">Nenhum endereço cadastrado.</p>';
+      return;
+    }
+    div.innerHTML = ends.map(e=>`
+      <div class="end-card ${enderecoSelecionado?.id===e.id?'selected':''}"
+        onclick="selecionarEndereco(${JSON.stringify(e).replace(/"/g,'&quot;')})">
+        <div class="end-apelido">${e.apelido} ${e.principal?'<span class="badge-principal">Principal</span>':''}</div>
+        <div class="end-logr">${e.logradouro}, ${e.numero}${e.complemento?' - '+e.complemento:''}<br>
+        ${e.bairro} — ${e.cidade}/${e.uf}<br>CEP: ${e.cep}</div>
+      </div>
+    `).join('');
+
+    // Seleciona o principal automaticamente se nenhum ainda selecionado
+    if(!enderecoSelecionado){
+      const principal = ends.find(e=>e.principal) || ends[0];
+      if(principal) selecionarEndereco(principal);
+    }
+  } catch(e){ console.warn(e) }
+}
+
+async function selecionarEndereco(end){
+  enderecoSelecionado = end;
+  fretesSelecionado = null;
+  document.getElementById('frete-resultado').innerHTML =
+    '<div class="loading-overlay"><div class="spinner"></div> Calculando frete...</div>';
+  renderCarrinho(); // rerender para atualizar seleção
+
+  try{
+    const data = await apiFetch(`/frete?cep=${end.cep}`);
+    const opcoes = data.opcoes_frete;
+    if(!opcoes.length){
+      document.getElementById('frete-resultado').innerHTML = '<p style="color:var(--red);font-size:.875rem">Frete indisponível para este CEP.</p>';
+      return;
+    }
+    // Seleciona primeiro automaticamente
+    fretesSelecionado = opcoes[0];
+    document.getElementById('frete-resultado').innerHTML = `
+      <div class="frete-box">
+        <div class="frete-titulo">Selecione o serviço</div>
+        ${opcoes.map((o,i)=>`
+          <label class="frete-opcao">
+            <input type="radio" name="frete" value="${i}" ${i===0?'checked':''}
+              onchange="fretesSelecionado=${JSON.stringify(o).replace(/"/g,'&quot;')};atualizarResumo()">
+            <div>
+              <div class="frete-nome">${o.servico}</div>
+              <div class="frete-prazo">Prazo estimado: ${o.prazo_dias} dias úteis${o.simulado?'<span class="frete-simulado">(estimado)</span>':''}</div>
+            </div>
+            <div class="frete-valor">${R(o.valor)}</div>
+          </label>
+        `).join('')}
+      </div>`;
+    atualizarResumo();
+  } catch(e){
+    document.getElementById('frete-resultado').innerHTML = `<p style="color:var(--red);font-size:.875rem">Erro ao calcular frete: ${e.message}</p>`;
+  }
+}
+
+async function finalizarPedido(){
+  if(!token){ toast('Faça login para continuar.','error'); showPage('auth'); return; }
+  if(!carrinho.length){ toast('Carrinho vazio.','error'); return; }
+  if(!enderecoSelecionado){ toast('Selecione um endereço.','error'); return; }
+  if(!fretesSelecionado){ toast('Aguarde o cálculo do frete.','error'); return; }
+  if(carrinho.length > 1){ toast('Por ora, finalize um produto por vez.','error'); return; }
+
+  const item  = carrinho[0];
+  const forma = document.querySelector('input[name="pagto"]:checked').value;
+  const btn   = document.getElementById('btn-finalizar');
+  btn.disabled = true; btn.textContent = 'Processando...';
+
+  try{
+    const data = await apiFetch('/pedidos',{
+      method:'POST', headers:authHeader(),
+      body: JSON.stringify({
+        produto_id:      item.id,
+        quantidade:      item.qtd,
+        endereco_id:     enderecoSelecionado.id,
+        forma_pagamento: forma,
+      })
+    });
+    carrinho=[]; salvarCarrinho();
+    enderecoSelecionado=null; fretesSelecionado=null;
+    toast(`Pedido ${data.pedido_id.slice(0,8)}... criado! Total: ${R(data.total)} 🎉`, 'success');
+    showPage('pedidos');
+  } catch(e){
+    toast(`Erro: ${e.message}`, 'error');
+  } finally {
+    btn.disabled=false; btn.textContent='✅ Finalizar Pedido';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ENDEREÇOS
+// ═══════════════════════════════════════════════════════════
+async function carregarEnderecos(){
+  if(!token){ document.getElementById('lista-enderecos').innerHTML='<p style="color:var(--muted)">Faça login para ver seus endereços.</p>'; return; }
+  try{
+    const ends = await apiFetch('/enderecos',{headers:authHeader()});
+    const div  = document.getElementById('lista-enderecos');
+    if(!ends.length){ div.innerHTML='<p style="color:var(--muted);margin-bottom:1rem">Nenhum endereço cadastrado ainda.</p>'; return; }
+    div.innerHTML = ends.map(e=>`
+      <div class="end-card">
+        <div class="end-apelido">${e.apelido} ${e.principal?'<span class="badge-principal">Principal</span>':''}</div>
+        <div class="end-logr">${e.logradouro}, ${e.numero}${e.complemento?' — '+e.complemento:''}<br>
+          ${e.bairro} — ${e.cidade}/${e.uf}<br>CEP: ${e.cep}</div>
+        <button class="end-delete" onclick="deletarEndereco('${e.id}')" title="Remover">✕</button>
+      </div>
+    `).join('');
+  } catch(e){ toast(e.message,'error') }
+}
+
+async function buscarCEP(){
+  const cep = document.getElementById('end-cep').value.replace(/\D/g,'');
+  if(cep.length!==8){ toast('CEP inválido','error'); return; }
+  try{
+    const d = await apiFetch(`/frete?cep=${cep}`).then(()=>fetch(`https://viacep.com.br/ws/${cep}/json/`).then(r=>r.json()));
+    if(d.erro){ toast('CEP não encontrado','error'); return; }
+    document.getElementById('end-logr').value   = d.logradouro||'';
+    document.getElementById('end-bairro').value = d.bairro||'';
+    document.getElementById('end-cidade').value = d.localidade||'';
+    document.getElementById('end-uf').value     = d.uf||'';
+    document.getElementById('end-numero').focus();
+    toast('Endereço preenchido automaticamente ✅','success');
+  } catch(e){ toast('Erro ao buscar CEP','error') }
+}
+
+function formatCEP(el){
+  let v = el.value.replace(/\D/g,'');
+  if(v.length>5) v = v.slice(0,5)+'-'+v.slice(5,8);
+  el.value = v;
+}
+
+async function salvarEndereco(){
+  if(!token){ toast('Faça login primeiro.','error'); return; }
+  const body = {
+    apelido:    document.getElementById('end-apelido').value.trim() || 'Casa',
+    cep:        document.getElementById('end-cep').value.replace(/\D/g,''),
+    logradouro: document.getElementById('end-logr').value.trim(),
+    numero:     document.getElementById('end-numero').value.trim(),
+    complemento:document.getElementById('end-comp').value.trim(),
+    bairro:     document.getElementById('end-bairro').value.trim(),
+    cidade:     document.getElementById('end-cidade').value.trim(),
+    uf:         document.getElementById('end-uf').value.trim().toUpperCase(),
+    principal:  document.getElementById('end-principal').checked,
+  };
+  if(!body.cep||!body.logradouro||!body.numero||!body.cidade){
+    toast('Preencha todos os campos obrigatórios.','error'); return;
+  }
+  try{
+    await apiFetch('/enderecos',{method:'POST',headers:authHeader(),body:JSON.stringify(body)});
+    toast('Endereço salvo! ✅','success');
+    ['apelido','cep','logr','numero','comp','bairro','cidade','uf'].forEach(f=>{
+      const el = document.getElementById('end-'+f);
+      if(el) el.value='';
+    });
+    document.getElementById('end-principal').checked=false;
+    carregarEnderecos();
+  } catch(e){ toast(e.message,'error') }
+}
+
+async function deletarEndereco(id){
+  if(!confirm('Remover este endereço?')) return;
+  try{
+    await apiFetch(`/enderecos/${id}`,{method:'DELETE',headers:authHeader()});
+    toast('Endereço removido.','success');
+    carregarEnderecos();
+  } catch(e){ toast(e.message,'error') }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PEDIDOS
+// ═══════════════════════════════════════════════════════════
+async function carregarPedidos(){
+  if(!token){
+    document.getElementById('lista-pedidos').innerHTML = '<div class="empty"><div class="empty-icon">🔒</div><div class="empty-text">Faça login para ver seus pedidos.</div></div>';
+    return;
+  }
+  document.getElementById('lista-pedidos').innerHTML = '<div class="loading-overlay"><div class="spinner"></div> Carregando pedidos...</div>';
+  try{
+    const pedidos = await apiFetch('/pedidos',{headers:authHeader()});
+    if(!pedidos.length){
+      document.getElementById('lista-pedidos').innerHTML = '<div class="empty"><div class="empty-icon">📦</div><div class="empty-text">Nenhum pedido ainda.</div><button class="btn btn-primary" style="margin-top:1rem" onclick="showPage(\'produtos\')">Comprar agora</button></div>';
+      return;
+    }
+    document.getElementById('lista-pedidos').innerHTML = pedidos.map(p=>`
+      <div class="pedido-card" id="ped-${p.id}">
+        <div class="pedido-header">
+          <div>
+            <div class="pedido-id">#${p.id.slice(0,8).toUpperCase()}</div>
+            <div class="pedido-nome">${p.produto_nome} × ${p.quantidade}</div>
+          </div>
+          <span class="status-badge status-${p.status}">${p.status.replace('_',' ')}</span>
+        </div>
+        <div style="font-size:.8rem;color:var(--muted)">
+          ${p.frete_servico||'PAC'} • ${p.endereco_cidade||''}/${p.endereco_uf||''} • ${p.frete_prazo||'?'} dias úteis
+        </div>
+        <div class="pedido-footer">
+          <div class="pedido-total">${R(p.total)}</div>
+          <div style="font-size:.8rem;color:var(--muted)">${new Date(p.criado_em).toLocaleString('pt-BR')}</div>
+          <button class="btn" style="font-size:11px;padding:5px 10px" onclick="carregarEventos('${p.id}')">Ver detalhes</button>
+        </div>
+        <div class="eventos-lista" id="ev-${p.id}" style="display:none"></div>
+      </div>
+    `).join('');
+  } catch(e){
+    document.getElementById('lista-pedidos').innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">${e.message}</div></div>`;
+  }
+}
+
+async function carregarEventos(pedidoId){
+  const div = document.getElementById('ev-'+pedidoId);
+  if(div.style.display!=='none'){ div.style.display='none'; return; }
+  div.style.display='';
+  div.innerHTML = '<div class="loading-overlay" style="padding:1rem"><div class="spinner"></div></div>';
+  try{
+    const data = await apiFetch(`/pedidos/${pedidoId}`,{headers:authHeader()});
+    const evs  = data.eventos || [];
+    div.innerHTML = evs.length
+      ? evs.map(e=>`
+          <div class="evento">
+            <div class="evento-servico">${e.servico}</div>
+            <div class="evento-status" style="color:${e.status.includes('FALHA')||e.status.includes('RECUS')?'var(--red)':'var(--green)'}">${e.status}</div>
+            <div class="evento-msg">${e.mensagem||''}</div>
+          </div>
+        `).join('')
+      : '<p style="color:var(--muted);font-size:.8rem;padding:.5rem 0">Aguardando processamento pelos consumidores...</p>';
+  } catch(e){ div.innerHTML = `<p style="color:var(--red);font-size:.8rem">${e.message}</p>` }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════
+document.getElementById('cart-badge').textContent = carrinho.reduce((s,i)=>s+i.qtd,0);
+atualizarNavAuth();
+carregarProdutos();
+</script>
+</body>
+</html>

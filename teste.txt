@@ -1,0 +1,17 @@
+www.docker.com/products/docker-desktop/
+developer.hashicorp.com/terraform/install
+www.python.org/downloads/
+ aws.amazon.com/cli/
+
+supabase = y89HYXpBaKfLbz5N
+Project name = E-commerce_Mensageria
+Project ID = cebmbaatijquroiytltj
+
+anon public = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlYm1iYWF0aWpxdXJvaXl0bHRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NjI1NTMsImV4cCI6MjA5NzUzODU1M30.v67XHl1WNsTjkgfdowdYHRTxdh_wVMhnY2p9WFuYXss
+
+service_role secret = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlYm1iYWF0aWpxdXJvaXl0bHRqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTk2MjU1MywiZXhwIjoyMDk3NTM4NTUzfQ.qBIDJMCbdaBPDzdTkYXw_DAj-2A3dYlT-v5iwgVQZow
+
+JWT Keys = 209af68f-8929-4dcb-914c-8b24d9432160
+
+pip install -r requirements.txt
+
