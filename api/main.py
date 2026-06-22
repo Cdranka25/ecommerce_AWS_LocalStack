@@ -25,7 +25,7 @@ from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.auth    import get_current_user
-from api.models  import RegisterRequest, LoginRequest, EnderecoRequest, PedidoRequest
+from api.models  import RegisterRequest, LoginRequest, EnderecoRequest, PedidoRequest, RefreshRequest
 from api.viacep  import consultar_cep
 from api.correios import calcular_frete
 from config.supabase_client import get_supabase, get_supabase_admin
@@ -110,6 +110,24 @@ async def logout(user=Depends(get_current_user)):
     sb = get_supabase(user["token"])
     sb.auth.sign_out()
     return {"message": "Logout realizado com sucesso."}
+
+@app.post("/auth/refresh", tags=["auth"])
+async def refresh_token(req: RefreshRequest):
+    """
+    Renova o access_token usando o refresh_token.
+    Chamado automaticamente pelo frontend quando recebe 401.
+    """
+    sb = get_supabase()
+    try:
+        res = sb.auth.refresh_session(req.refresh_token)
+        if not res.session:
+            raise HTTPException(status_code=401, detail="Refresh token inválido.")
+        return {
+            "access_token":  res.session.access_token,
+            "refresh_token": res.session.refresh_token,
+        }
+    except Exception:
+        raise HTTPException(status_code=401, detail="Sessão expirada. Faça login novamente.")
 
 
 # ═══════════════════════════════════════════════════════════

@@ -15,3 +15,5 @@ JWT Keys = 209af68f-8929-4dcb-914c-8b24d9432160
 
 pip install -r requirements.txt
 
+taskkill /F /IM python.exe
+taskkill /F /IM uvicorn.exe

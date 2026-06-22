@@ -13,17 +13,20 @@ class LoginRequest(BaseModel):
     email: str
     senha: str
 
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
 class EnderecoRequest(BaseModel):
     """Endereço que o usuário cadastra no perfil dele."""
-    apelido:    str            # ex: "Casa", "Trabalho"
-    cep:        str
-    logradouro: str
-    numero:     str
+    apelido:     str
+    cep:         str
+    logradouro:  str
+    numero:      str
     complemento: Optional[str] = ""
-    bairro:     str
-    cidade:     str
-    uf:         str
-    principal:  bool = False   # endereço padrão do usuário
+    bairro:      str
+    cidade:      str
+    uf:          str
+    principal:   bool = False
 
     @field_validator("cep")
     @classmethod
@@ -37,7 +40,7 @@ class PedidoRequest(BaseModel):
     """Corpo do POST /pedidos."""
     produto_id:      str
     quantidade:      int = 1
-    endereco_id:     str           # UUID do endereço salvo no Supabase
+    endereco_id:     str
     forma_pagamento: Literal["pix", "boleto", "cartao_credito"] = "pix"
 
     @field_validator("quantidade")

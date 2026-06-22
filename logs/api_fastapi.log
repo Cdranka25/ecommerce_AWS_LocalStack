@@ -1,0 +1,400 @@
+INFO:     Will watch for changes in these directories: ['c:\\Users\\cdran\\OneDrive - FURB\\FURB\\Outros\\Computação\\Sistemas Distribuídos\\Trabalho_Final\\ecommerce_AWS_LocalStack']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [26288] using StatReload
+INFO:     Started server process [32052]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:54373 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59544 - "OPTIONS /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59544 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:61890 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:63703 - "GET /frete?cep=88355112 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52068 - "POST /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:63703 - "GET /frete?cep=88355112 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63703 - "POST /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:52276 - "POST /enderecos HTTP/1.1" 401 Unauthorized
+WARNING:  StatReload detected changes in 'api\main.py'. Reloading...
+ INFO:     127.0.0.1:52289 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [32052]
+Process SpawnProcess-2:
+Traceback (most recent call last):
+  File "C:\Users\cdran\anaconda3\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\cdran\anaconda3\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\server.py", line 79, in serve
+    await self._serve(sockets)
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\config.py", line 481, in load
+    self.loaded_app = self.load_app()
+                      ~~~~~~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\config.py", line 415, in load_app
+    return import_from_string(self.app)
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "C:\Users\cdran\anaconda3\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "c:\Users\cdran\OneDrive - FURB\FURB\Outros\Computação\Sistemas Distribuídos\Trabalho_Final\ecommerce_AWS_LocalStack\api\main.py", line 28, in <module>
+    from api.models  import RegisterRequest, LoginRequest, EnderecoRequest, PedidoRequest, RefreshRequest
+ImportError: cannot import name 'PedidoRequest' from 'api.models' (c:\Users\cdran\OneDrive - FURB\FURB\Outros\Computação\Sistemas Distribuídos\Trabalho_Final\ecommerce_AWS_LocalStack\api\models.py)
+WARNING:  StatReload detected changes in 'api\models.py'. Reloading...
+ Process SpawnProcess-3:
+Traceback (most recent call last):
+  File "C:\Users\cdran\anaconda3\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\cdran\anaconda3\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\server.py", line 79, in serve
+    await self._serve(sockets)
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\config.py", line 481, in load
+    self.loaded_app = self.load_app()
+                      ~~~~~~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\config.py", line 415, in load_app
+    return import_from_string(self.app)
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "C:\Users\cdran\anaconda3\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "c:\Users\cdran\OneDrive - FURB\FURB\Outros\Computação\Sistemas Distribuídos\Trabalho_Final\ecommerce_AWS_LocalStack\api\main.py", line 115, in <module>
+    class RefreshRequest(BaseModel):
+                         ^^^^^^^^^
+NameError: name 'BaseModel' is not defined
+WARNING:  StatReload detected changes in 'api\models.py'. Reloading...
+ Process SpawnProcess-4:
+Traceback (most recent call last):
+  File "C:\Users\cdran\anaconda3\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\cdran\anaconda3\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\server.py", line 79, in serve
+    await self._serve(sockets)
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\config.py", line 481, in load
+    self.loaded_app = self.load_app()
+                      ~~~~~~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\config.py", line 415, in load_app
+    return import_from_string(self.app)
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "C:\Users\cdran\anaconda3\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "c:\Users\cdran\OneDrive - FURB\FURB\Outros\Computação\Sistemas Distribuídos\Trabalho_Final\ecommerce_AWS_LocalStack\api\main.py", line 115, in <module>
+    class RefreshRequest(BaseModel):
+                         ^^^^^^^^^
+NameError: name 'BaseModel' is not defined
+WARNING:  StatReload detected changes in 'api\main.py'. Reloading...
+ INFO:     Started server process [26136]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:61756 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65257 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61422 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60227 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50720 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52167 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52292 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52298 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60234 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54461 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65513 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63532 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54483 - "OPTIONS /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50692 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54472 - "OPTIONS /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52572 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50710 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61784 - "OPTIONS /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50315 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60154 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55577 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61771 - "OPTIONS /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60234 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53581 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52611 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57084 - "OPTIONS /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57084 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:57148 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57165 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57284 - "OPTIONS /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57284 - "POST /auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:57284 - "POST /auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:51810 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52172 - "OPTIONS /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52172 - "POST /auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:52231 - "POST /auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:56128 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+in <module>
+    class RefreshRequest(BaseModel):
+                         ^^^^^^^^^
+NameError: name 'BaseModel' is not defined
+INFO:     Will watch for changes in these directories: ['c:\\Users\\cdran\\OneDrive - FURB\\FURB\\Outros\\Computação\\Sistemas Distribuídos\\Trabalho_Final\\ecommerce_AWS_LocalStack']
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\cdran\anaconda3\Scripts\uvicorn.exe\__main__.py", line 7, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\click\core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\click\core.py", line 1082, in main
+    rv = self.invoke(ctx)
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\click\core.py", line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\click\core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\main.py", line 441, in main
+    run(
+    ~~~^
+        app,
+        ^^^^
+    ...<48 lines>...
+        reset_contextvars=reset_contextvars,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\main.py", line 609, in run
+    config.load_app()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\config.py", line 415, in load_app
+    return import_from_string(self.app)
+  File "C:\Users\cdran\anaconda3\Lib\site-packages\uvicorn\importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "C:\Users\cdran\anaconda3\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "c:\Users\cdran\OneDrive - FURB\FURB\Outros\Computação\Sistemas Distribuídos\Trabalho_Final\ecommerce_AWS_LocalStack\api\main.py", line 115, in <module>
+    class RefreshRequest(BaseModel):
+                         ^^^^^^^^^
+NameError: name 'BaseModel' is not defined
+INFO:     Will watch for changes in these directories: ['c:\\Users\\cdran\\OneDrive - FURB\\FURB\\Outros\\Computação\\Sistemas Distribuídos\\Trabalho_Final\\ecommerce_AWS_LocalStack']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [34660] using StatReload
+INFO:     Started server process [16416]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Will watch for changes in these directories: ['c:\\Users\\cdran\\OneDrive - FURB\\FURB\\Outros\\Computação\\Sistemas Distribuídos\\Trabalho_Final\\ecommerce_AWS_LocalStack']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [31820] using StatReload
+INFO:     Started server process [9804]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Will watch for changes in these directories: ['c:\\Users\\cdran\\OneDrive - FURB\\FURB\\Outros\\Computação\\Sistemas Distribuídos\\Trabalho_Final\\ecommerce_AWS_LocalStack']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [27456] using StatReload
+INFO:     Started server process [12624]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:59534 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60466 - "OPTIONS /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60466 - "POST /auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:60517 - "POST /auth/login HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:60713 - "OPTIONS /auth/register HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60713 - "POST /auth/register HTTP/1.1" 201 Created
+INFO:     127.0.0.1:60713 - "POST /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60713 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60713 - "OPTIONS /auth/logout HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60713 - "POST /auth/logout HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:60713 - "OPTIONS /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60713 - "POST /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60713 - "POST /auth/logout HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:60713 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60713 - "POST /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60713 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "OPTIONS /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:60796 - "POST /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:60796 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:60796 - "POST /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:60796 - "GET /frete?cep=88355112 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59753 - "POST /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:59753 - "POST /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59753 - "POST /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:60796 - "GET /frete?cep=88355112 HTTP/1.1" 200 OK
+INFO:     Will watch for changes in these directories: ['c:\\Users\\cdran\\OneDrive - FURB\\FURB\\Outros\\Computação\\Sistemas Distribuídos\\Trabalho_Final\\ecommerce_AWS_LocalStack']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [35044] using StatReload
+INFO:     Started server process [27940]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:64455 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64455 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64455 - "POST /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64496 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64455 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64496 - "POST /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64455 - "GET /enderWARNING:  StatReload detected changes in 'check_env.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [27500]
+INFO:     Started server process [5812]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'api\auth.py'. Reloading...
+  /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64455 - "POST /auth/logout HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64455 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64719 - "POST /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64719 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64719 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64719 - "POST /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64719 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64719 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64719 - "POST /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64719 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64779 - "POST /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64779 - "POST /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64779 - "POST /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64719 - "GET /frete?cep=88355112 HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'check_env.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [27940]
+INFO:     Started server process [37828]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'api\auth.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Will watch for changes in these directories: ['c:\\Users\\cdran\\OneDrive - FURB\\FURB\\Outros\\Computação\\Sistemas Distribuídos\\Trabalho_Final\\ecommerce_AWS_LocalStack']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [35224] using StatReload
+INFO:     Started server process [29184]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:58262 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58262 - "OPTIONS /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58262 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58291 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58291 - "GET /frete?cep=88355112 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58291 - "POST /enderecos HTTP/1.1" 201 Created
+INFO:     127.0.0.1:58291 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58291 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58291 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58291 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58429 - "GET /frete?cep=88355-112 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58429 - "GET /frete?cep=88355-112 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58611 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58611 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58611 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58611 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58618 - "OPTIONS /pedidos HTTP/1.1" 200 OK
+[>>] Pedido e6ed705b publicado em 5 filas
+INFO:     127.0.0.1:58611 - "POST /pedidos HTTP/1.1" 201 Created
+INFO:     127.0.0.1:58611 - "GET /pedidos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58611 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58611 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58611 - "GET /pedidos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58611 - "OPTIONS /auth/logout HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58611 - "POST /auth/logout HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58611 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58611 - "GET /produtos HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'api\viacep.py'. Reloading...
+ INFO:     Will watch for changes in these directories: ['c:\\Users\\cdran\\OneDrive - FURB\\FURB\\Outros\\Computação\\Sistemas Distribuídos\\Trabalho_Final\\ecommerce_AWS_LocalStack']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [10444] using StatReload
+INFO:     Started server process [33108]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:63873 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64073 - "OPTIONS /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64073 - "POST /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64073 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64073 - "GET /pedidos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64073 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64222 - "GET /pedidos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64222 - "GET /pedidos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50923 - "GET /pedidos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50923 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50923 - "GET /pedidos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50923 - "OPTIONS /pedidos/e6ed705b-ed72-4d09-ab57-a0bfd6fab2a5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50923 - "GET /pedidos/e6ed705b-ed72-4d09-ab57-a0bfd6fab2a5 HTTP/1.1" 200 OK

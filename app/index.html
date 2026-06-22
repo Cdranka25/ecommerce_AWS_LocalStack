@@ -238,7 +238,7 @@ nav{background:var(--bg2);border-bottom:1px solid var(--border);
     <button class="nav-btn" onclick="showPage('produtos')">Produtos</button>
     <button class="nav-btn" id="nav-enderecos" style="display:none" onclick="showPage('enderecos')">Endereços</button>
     <button class="nav-btn" id="nav-pedidos" style="display:none" onclick="showPage('pedidos')">Meus Pedidos</button>
-    <button class="nav-btn" onclick="showPage('carrinho')">
+    <button class="nav-btn" id="nav-carrinho" style="display:none" onclick="showPage('carrinho')">
       🛒 Carrinho <span class="cart-badge" id="cart-badge">0</span>
     </button>
     <button class="nav-btn primary" id="btn-auth" onclick="showPage('auth')">Entrar</button>
@@ -483,8 +483,55 @@ function showPage(id){
   if(id==='pedidos')    carregarPedidos();
 }
 function authHeader(){ return {'Authorization':`Bearer ${token}`,'Content-Type':'application/json'} }
+
+async function renovarToken() {
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (!refreshToken) return false;
+  try {
+    const r = await fetch(API + '/auth/refresh', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({refresh_token: refreshToken})
+    });
+    if (!r.ok) return false;
+    const data = await r.json();
+    token = data.access_token;
+    localStorage.setItem('token', token);
+    if (data.refresh_token) localStorage.setItem('refreshToken', data.refresh_token);
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
 async function apiFetch(path, opts={}){
   const r = await fetch(API+path, opts);
+
+  // Só tenta renovar token se a requisição era autenticada (tinha Bearer token)
+  const eraAutenticada = opts.headers && opts.headers['Authorization'];
+
+  if (r.status === 401 && eraAutenticada) {
+    const renovado = await renovarToken();
+    if (renovado) {
+      opts.headers['Authorization'] = `Bearer ${token}`;
+      const r2 = await fetch(API+path, opts);
+      if (!r2.ok) {
+        const err = await r2.json().catch(()=>({detail:'Erro desconhecido'}));
+        throw new Error(err.detail || r2.statusText);
+      }
+      return r2.json();
+    } else {
+      token=null; userInfo=null;
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('userInfo');
+      atualizarNavAuth();
+      toast('Sessão expirada. Faça login novamente.','error');
+      showPage('auth');
+      throw new Error('Sessão expirada.');
+    }
+  }
+
   if(!r.ok){
     const err = await r.json().catch(()=>({detail:'Erro desconhecido'}));
     throw new Error(err.detail || r.statusText);
@@ -515,6 +562,7 @@ async function doLogin(){
     token    = data.access_token;
     userInfo = data.user;
     localStorage.setItem('token', token);
+    localStorage.setItem('refreshToken', data.refresh_token);
     localStorage.setItem('userInfo', JSON.stringify(userInfo));
     atualizarNavAuth();
     toast(`Bem-vindo, ${userInfo.nome || userInfo.email}! 👋`, 'success');
@@ -546,6 +594,7 @@ async function logout(){
   try{ await apiFetch('/auth/logout',{method:'POST',headers:authHeader()}) } catch(e){}
   token=null; userInfo=null;
   localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken');
   localStorage.removeItem('userInfo');
   atualizarNavAuth();
   showPage('produtos');
@@ -554,11 +603,12 @@ async function logout(){
 
 function atualizarNavAuth(){
   const logado = !!token;
-  document.getElementById('btn-auth').style.display     = logado ? 'none' : '';
-  document.getElementById('btn-logout').style.display   = logado ? '' : 'none';
-  document.getElementById('nav-enderecos').style.display= logado ? '' : 'none';
-  document.getElementById('nav-pedidos').style.display  = logado ? '' : 'none';
-  document.getElementById('nav-user').textContent       = logado ? (userInfo?.nome || userInfo?.email || '') : '';
+  document.getElementById('btn-auth').style.display      = logado ? 'none' : '';
+  document.getElementById('btn-logout').style.display    = logado ? '' : 'none';
+  document.getElementById('nav-enderecos').style.display = logado ? '' : 'none';
+  document.getElementById('nav-pedidos').style.display   = logado ? '' : 'none';
+  document.getElementById('nav-carrinho').style.display  = logado ? '' : 'none';
+  document.getElementById('nav-user').textContent        = logado ? (userInfo?.nome || userInfo?.email || '') : '';
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -820,17 +870,50 @@ async function carregarEnderecos(){
 
 async function buscarCEP(){
   const cep = document.getElementById('end-cep').value.replace(/\D/g,'');
-  if(cep.length!==8){ toast('CEP inválido','error'); return; }
-  try{
-    const d = await apiFetch(`/frete?cep=${cep}`).then(()=>fetch(`https://viacep.com.br/ws/${cep}/json/`).then(r=>r.json()));
-    if(d.erro){ toast('CEP não encontrado','error'); return; }
-    document.getElementById('end-logr').value   = d.logradouro||'';
-    document.getElementById('end-bairro').value = d.bairro||'';
-    document.getElementById('end-cidade').value = d.localidade||'';
-    document.getElementById('end-uf').value     = d.uf||'';
-    document.getElementById('end-numero').focus();
-    toast('Endereço preenchido automaticamente ✅','success');
-  } catch(e){ toast('Erro ao buscar CEP','error') }
+  if(cep.length!==8){ toast('CEP deve ter 8 dígitos','error'); return; }
+
+  const btnBuscar = document.querySelector('[onclick="buscarCEP()"]');
+  if(btnBuscar){ btnBuscar.textContent='Buscando...'; btnBuscar.disabled=true; }
+
+  let d = null;
+
+  // Tenta BrasilAPI primeiro (mais rápida)
+  try {
+    const r = await fetch(`https://brasilapi.com.br/api/cep/v2/${cep}`);
+    if(r.ok){
+      const data = await r.json();
+      if(data.city){
+        d = {
+          logradouro: data.street || '',
+          bairro:     data.neighborhood || '',
+          localidade: data.city || '',
+          uf:         data.state || '',
+        };
+      }
+    }
+  } catch(e){}
+
+  // Fallback: ViaCEP
+  if(!d){
+    try {
+      const r = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      if(r.ok){
+        const data = await r.json();
+        if(!data.erro) d = data;
+      }
+    } catch(e){}
+  }
+
+  if(btnBuscar){ btnBuscar.textContent='Buscar'; btnBuscar.disabled=false; }
+
+  if(!d){ toast('CEP não encontrado','error'); return; }
+
+  document.getElementById('end-logr').value   = d.logradouro || '';
+  document.getElementById('end-bairro').value = d.bairro     || '';
+  document.getElementById('end-cidade').value = d.localidade || '';
+  document.getElementById('end-uf').value     = d.uf         || '';
+  document.getElementById('end-numero').focus();
+  toast('Endereço preenchido ✅','success');
 }
 
 function formatCEP(el){
