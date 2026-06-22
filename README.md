@@ -10,7 +10,7 @@ A arquitetura reproduz, em pequena escala, um sistema real de e-commerce distrib
 
 ## Sumário
 
-- [Sobre o projeto](#-sobre-o-projeto)
+- [Sobre o projeto](##-Sobre-o-projeto)
 - [Arquitetura e stack](#-arquitetura-e-stack)
 - [Estrutura do projeto](#-estrutura-do-projeto)
 - [Pré-requisitos](#-pré-requisitos--o-que-baixar-e-instalar)
