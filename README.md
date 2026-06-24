@@ -10,25 +10,24 @@ A arquitetura reproduz, em pequena escala, um sistema real de e-commerce distrib
 
 ## Sumário
 
-- [Sobre o projeto](#-Sobre-o-projeto)
-- [Arquitetura e stack](#-arquitetura-e-stack)
-- [Estrutura do projeto](#-estrutura-do-projeto)
-- [Pré-requisitos](#-pré-requisitos--o-que-baixar-e-instalar)
-- [Passo 1 — Obter o projeto](#passo-1--obter-o-projeto)
-- [Passo 2 — Ambiente Python (Anaconda)](#passo-2--criar-o-ambiente-python-com-anaconda)
-- [Passo 3 — Criar o projeto no Supabase](#passo-3--criar-conta-e-projeto-no-supabase)
-- [Passo 4 — Criar as tabelas no Supabase](#passo-4--criar-as-tabelas-no-supabase-sql)
-- [Passo 5 — Configurar o arquivo .env](#passo-5--configurar-o-arquivo-env)
-- [Passo 6 — Subir o Docker (LocalStack)](#passo-6--subir-o-docker-localstack)
-- [Passo 7 — Provisionar com Terraform](#passo-7--provisionar-a-infraestrutura-com-terraform)
-- [Passo 8 — Iniciar a aplicação](#passo-8--iniciar-a-api-o-frontend-e-os-consumidores)
-- [Passo 9 — Testar o sistema](#passo-9--testar-o-sistema)
-- [Endpoints da API](#-endpoints-da-api)
-- [Fluxo do sistema](#-fluxo-do-sistema)
-- [Como parar tudo](#-como-parar-tudo)
-- [Solução de problemas comuns](#-solução-de-problemas-comuns)
-- [Checklist antes da apresentação](#-checklist-antes-da-apresentação)
-- [Requisitos do trabalho atendidos](#-requisitos-do-trabalho-atendidos)
+- [Sobre o projeto](#sobre-o-projeto)
+- [Arquitetura e stack](#arquitetura-e-stack)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Pré-requisitos](#pré-requisitos--o-que-baixar-e-instalar)
+- [Passo 1 — Criar o ambiente Python com Anaconda](#passo-1--criar-o-ambiente-python-com-anaconda)
+- [Passo 2 — Criar conta e projeto no Supabase](#passo-2--criar-conta-e-projeto-no-supabase)
+- [Passo 3 — Criar as tabelas no Supabase (SQL)](#passo-3--criar-as-tabelas-no-supabase-sql)
+- [Passo 4 — Configurar o arquivo .env](#passo-4--configurar-o-arquivo-env)
+- [Passo 5 — Subir o Docker (LocalStack)](#passo-5--subir-o-docker-localstack)
+- [Passo 6 — Provisionar a infraestrutura com Terraform](#passo-6--provisionar-a-infraestrutura-com-terraform)
+- [Passo 7 — Iniciar a API, o frontend e os consumidores](#passo-7--iniciar-a-api-o-frontend-e-os-consumidores)
+- [Passo 8 — Testar o sistema](#passo-8--testar-o-sistema)
+- [Endpoints da API](#endpoints-da-api)
+- [Fluxo do sistema](#fluxo-do-sistema)
+- [Como parar tudo](#como-parar-tudo)
+- [Solução de problemas comuns](#solução-de-problemas-comuns)
+- [Checklist para utilização](#checklist-para-utilização)
+- [Requisitos do trabalho atendidos](#requisitos-do-trabalho-atendidos)
 
 ---
 
@@ -92,11 +91,23 @@ ecommerce_AWS_LocalStack/
 │   └── notificacao.py
 ├── infra/
 │   └── main.tf                # Terraform: cria as filas SQS no LocalStack
-├── app/
-│   └── index.html             # Frontend completo do e-commerce
+├── app/                          # Frontend (HTML, CSS e JS separados)
+│   ├── index.html              # Loja — apenas marcação HTML
+│   ├── admin.html              # AWS Explorer — apenas marcação HTML
+│   ├── css/
+│   │   ├── loja.css            # Estilos da loja
+│   │   └── admin.css           # Estilos do AWS Explorer
+│   └── js/
+│       ├── loja/                # Lógica da loja: config, auth, produtos,
+│       │                        # carrinho, endereços, pedidos, main
+│       └── admin/               # Lógica do AWS Explorer: filas, S3, eventos, DLQ
 ├── docs/
-│   ├── supabase_schema.sql        # Script SQL para criar as tabelas no Supabase
-│   └── supabase_insert_product.sql # Inserts extras de produtos (opcional)
+│   ├── Comandos AWS CLI/
+│   │   └── README.md           # Comandos úteis do AWS CLI para o LocalStack
+│   ├── Comandos SQL/
+│   │   ├── supabase_schema.sql         # Script SQL para criar as tabelas no Supabase
+│   │   └── supabase_insert_product.sql # Inserts extras de produtos (opcional)
+│   └── Definição/                # Diagramas e documento de definição do trabalho
 ├── scripts/
 │   ├── start_all.bat          # Inicia tudo no Windows (Anaconda base)
 │   └── start_all.sh           # Inicia tudo no Linux/Mac
@@ -167,7 +178,7 @@ pip install -r requirements.txt
 
 Isso instala: FastAPI, Uvicorn, Supabase SDK, httpx, Pydantic, python-dotenv, python-jose, passlib, boto3 e python-multipart.
 
-> **Sobre o `scripts\start_all.bat`:** esse script localiza automaticamente o Python do **ambiente base** do Anaconda (não de um ambiente conda customizado). Se você criar um ambiente próprio (`ecommerce-sd`), use o `launcher_server.py` (Passo 8) ou o modo manual para iniciar os serviços — eles funcionam corretamente com qualquer ambiente ativado. Alternativamente, instale as dependências direto no ambiente `base` do Anaconda para usar o `.bat` sem ajustes.
+> **Sobre o `scripts\start_all.bat`:** esse script localiza automaticamente o Python do **ambiente base** do Anaconda (não de um ambiente conda customizado). Se você criar um ambiente próprio (`ecommerce-sd`), use o `launcher_server.py` (Passo 7) ou o modo manual para iniciar os serviços — eles funcionam corretamente com qualquer ambiente ativado. Alternativamente, instale as dependências direto no ambiente `base` do Anaconda para usar o `.bat` sem ajustes.
 
 ---
 
@@ -194,9 +205,9 @@ No painel do projeto: menu lateral → **Settings** (ícone de engrenagem) → *
 | `SUPABASE_SERVICE_ROLE_KEY` | Seção **Project API Keys** → `service_role` → clique em **Reveal** |
 | `JWT_SECRET` | Seção **JWT Settings** → `JWT Secret` → clique em **Reveal** |
 
-> Copie esses 4 valores agora — você vai colá-los no arquivo `.env` no Passo 5.
+> Copie esses 4 valores agora — você vai colá-los no arquivo `.env` no Passo 4.
 
-### 3.3 Desativar confirmação de e-mail (somente para testes/apresentação)
+### 2.3 Desativar confirmação de e-mail (somente para testes/apresentação)
 
 1. Menu lateral → **Authentication** → **Providers** → **Email**.
 2. Desative a opção **Confirm email**.
@@ -248,7 +259,7 @@ cp .env_example .env
 Abra o `.env` em um editor de texto e preencha:
 
 ```env
-# ── Supabase (cole os valores coletados no Passo 3.2) ──────
+# ── Supabase (cole os valores coletados no Passo 2.2) ──────
 SUPABASE_URL=https://xxxxxxxxxxxxxxxxxxxx.supabase.co
 SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -375,7 +386,7 @@ Devem aparecer 6 URLs: as 5 filas `sqs-pedidos-*` e a `sqs-dead-letter`.
 
 ---
 
-## Passo 8 — Iniciar a API, o frontend e os consumidores
+## Passo 7 — Iniciar a API, o frontend e os consumidores
 
 Existem três formas de iniciar o sistema. Escolha a que preferir.
 
@@ -436,7 +447,7 @@ Documentação interativa (Swagger): **http://localhost:8000/docs**
 
 ---
 
-## Passo 9 — Testar o sistema
+## Passo 8 — Testar o sistema
 
 ### Via frontend (recomendado)
 
@@ -496,20 +507,20 @@ curl http://localhost:8000/pedidos/PEDIDO_ID \
 
 | Método | Rota | Autenticação | Descrição |
 |---|---|---|---|
-| `POST` | `/auth/register` | Cadastro de usuário |
-| `POST` | `/auth/login`  | Login (retorna JWT) |
-| `POST` | `/auth/logout`  | Logout |
-| `POST` | `/auth/refresh` | Renova o token de acesso |
-| `GET` | `/produtos`  | Lista os produtos disponíveis |
-| `GET` | `/produtos/{id}` | Detalha um produto |
-| `GET` | `/enderecos`  | Lista endereços do usuário logado |
-| `POST` | `/enderecos`  | Cadastra um endereço |
-| `DELETE` | `/enderecos/{id}`  | Remove um endereço |
-| `GET` | `/frete?cep=XXXXXXXX` | — | Calcula frete PAC e SEDEX |
-| `POST` | `/pedidos`  | Cria um pedido (publica nas filas SQS) |
-| `GET` | `/pedidos`  | Lista pedidos do usuário logado |
-| `GET` | `/pedidos/{id}`  | Detalha o pedido e os eventos de processamento |
-| `GET` | `/` | Health check da API |
+| `POST` | `/auth/register` | Não | Cadastro de usuário |
+| `POST` | `/auth/login` | Não | Login (retorna JWT) |
+| `POST` | `/auth/logout` | Sim | Logout |
+| `POST` | `/auth/refresh` | Não | Renova o token de acesso |
+| `GET` | `/produtos` | Não | Lista os produtos disponíveis |
+| `GET` | `/produtos/{id}` | Não | Detalha um produto |
+| `GET` | `/enderecos` | Sim | Lista endereços do usuário logado |
+| `POST` | `/enderecos` | Sim | Cadastra um endereço |
+| `DELETE` | `/enderecos/{id}` | Sim | Remove um endereço |
+| `GET` | `/frete?cep=XXXXXXXX` | Não | Calcula frete PAC e SEDEX |
+| `POST` | `/pedidos` | Sim | Cria um pedido (publica nas filas SQS) |
+| `GET` | `/pedidos` | Sim | Lista pedidos do usuário logado |
+| `GET` | `/pedidos/{id}` | Sim | Detalha o pedido e os eventos de processamento |
+| `GET` | `/` | Não | Health check da API |
 
 Documentação interativa completa em **http://localhost:8000/docs**.
 
@@ -550,7 +561,13 @@ Pagamento  Estoque    Fiscal    Logística     Notificação
 # se usou o launcher_server.py / start_all.bat, feche as janelas/processos abertos.
 
 # Parar as tarefas
+# Windows:
 taskkill /F /IM python.exe
+
+# Mac/Linux:
+pkill -f "uvicorn api.main:app"
+pkill -f "launcher_server.py"
+pkill -f "consumidores/"
 
 # Derrubar o LocalStack
 docker-compose down
