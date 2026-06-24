@@ -9,3 +9,4 @@ venv/
 *.tfstate.backup
 .terraform.lock.hcl
 teste.txt
+*.log

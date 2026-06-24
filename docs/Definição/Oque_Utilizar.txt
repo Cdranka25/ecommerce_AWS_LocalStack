@@ -1,0 +1,3 @@
+Utilizar:
+terraforms
+mini stack - emulador AWS free

@@ -22,7 +22,9 @@ python consumidores/notificacao.py &
 
 echo ""
 echo "====================================================="
-echo " API:  http://localhost:8000"
-echo " Docs: http://localhost:8000/docs"
+echo " API:           http://localhost:8000"
+echo " Docs:          http://localhost:8000/docs"
+echo " Frontend:      http://localhost:3000"
+echo " AWS Explorer:  http://localhost:3000/admin.html"
 echo " Para parar: kill \$(jobs -p)"
 echo "====================================================="

@@ -10,7 +10,7 @@ A arquitetura reproduz, em pequena escala, um sistema real de e-commerce distrib
 
 ## Sumário
 
-- [Sobre o projeto](##-Sobre-o-projeto)
+- [Sobre o projeto](#-Sobre-o-projeto)
 - [Arquitetura e stack](#-arquitetura-e-stack)
 - [Estrutura do projeto](#-estrutura-do-projeto)
 - [Pré-requisitos](#-pré-requisitos--o-que-baixar-e-instalar)
@@ -122,7 +122,16 @@ Instale as ferramentas abaixo **antes de começar**:
 | **AWS CLI** *(opcional)* | https://aws.amazon.com/cli/ | Inspecionar filas/bucket no LocalStack pelo terminal |
 | **Conta no Supabase** | https://supabase.com | Banco de dados + autenticação em nuvem (gratuito) |
 
+> **Sobre o Terraform:** é necessário criar uma pasta de nome Terraform no disco, e colar o executável dentro da pasta. Após isso, é necessário inserir o caminho no PATH, dentro das variáveis do sistema. 
+
 > **Sobre o AWS CLI:** não é obrigatório para o projeto funcionar — o LocalStack substitui a AWS real e o `boto3` (já incluso no `requirements.txt`) é quem fala com ele. O AWS CLI serve apenas como ferramenta extra para inspecionar filas e o bucket manualmente.
+Dentro do CMD, execute o comando: 
+  aws configure
+Pedirá as seguintes informações:
+  AWS Access Key ID:
+  AWS Secret Access Key:
+  Default region name:
+  Default output format:
 
 Depois de instalar, abra o **Anaconda Prompt** (Windows) ou um terminal com o conda inicializado (Mac/Linux) e confira as versões:
 
@@ -137,24 +146,11 @@ aws --version          # apenas se você instalou o AWS CLI
 
 ---
 
-## Passo 1 — Obter o projeto
-
-Se você recebeu o projeto como `.zip`, apenas extraia em uma pasta de sua preferência. Se for clonar do Git:
-
-```bash
-git clone <url-do-repositorio>
-cd ecommerce_AWS_LocalStack
-```
-
-Todos os comandos a seguir devem ser executados **dentro da pasta raiz do projeto**.
-
----
-
-## Passo 2 — Criar o ambiente Python com Anaconda
+## Passo 1 — Criar o ambiente Python com Anaconda
 
 Abra o **Anaconda Prompt** (Windows) ou o terminal (Mac/Linux) na pasta do projeto.
 
-### 2.1 Criar um ambiente conda dedicado (recomendado)
+### 1.1 Criar um ambiente conda dedicado (recomendado)
 
 ```bash
 conda create -n ecommerce-sd python=3.11 -y
@@ -163,7 +159,7 @@ conda activate ecommerce-sd
 
 > Mantenha esse ambiente **ativado** (`conda activate ecommerce-sd`) em **todo terminal novo** que você abrir para rodar qualquer parte do projeto (API, consumidores, scripts).
 
-### 2.2 Instalar as dependências
+### 1.2 Instalar as dependências
 
 ```bash
 pip install -r requirements.txt
@@ -175,9 +171,9 @@ Isso instala: FastAPI, Uvicorn, Supabase SDK, httpx, Pydantic, python-dotenv, py
 
 ---
 
-## Passo 3 — Criar conta e projeto no Supabase
+## Passo 2 — Criar conta e projeto no Supabase
 
-### 3.1 Criar o projeto
+### 2.1 Criar o projeto
 
 1. Acesse **https://supabase.com** e clique em **Start your project**.
 2. Crie uma conta com Google, GitHub ou e-mail (gratuito).
@@ -187,7 +183,7 @@ Isso instala: FastAPI, Uvicorn, Supabase SDK, httpx, Pydantic, python-dotenv, py
    - **Region:** `South America (São Paulo)`
 4. Clique em **Create new project** e aguarde cerca de 2 minutos.
 
-### 3.2 Coletar as chaves da API
+### 2.2 Coletar as chaves da API
 
 No painel do projeto: menu lateral → **Settings** (ícone de engrenagem) → **API**.
 
@@ -210,13 +206,15 @@ No painel do projeto: menu lateral → **Settings** (ícone de engrenagem) → *
 
 ---
 
-## Passo 4 — Criar as tabelas no Supabase (SQL)
+## Passo 3 — Criar as tabelas no Supabase (SQL)
 
 1. No painel do Supabase, abra **SQL Editor** (menu lateral).
 2. Clique em **New Query**.
 3. Abra o arquivo `docs/supabase_schema.sql` do projeto, copie todo o conteúdo e cole no editor.
 4. Clique em **Run** (ou `Ctrl+Enter`).
 5. Deve aparecer: `Success. No rows returned`.
+
+Obs.: Pode ser utilizado os comandos existentes na pasta docs/Comandos SQL
 
 ### Tabelas criadas
 
@@ -231,9 +229,9 @@ Confirme em **Table Editor** (menu lateral) que as 4 tabelas existem e que `prod
 
 ---
 
-## Passo 5 — Configurar o arquivo `.env`
+## Passo 4 — Configurar o arquivo `.env`
 
-### 5.1 Criar o arquivo a partir do modelo
+### 4.1 Criar o arquivo a partir do modelo
 
 O arquivo de modelo se chama **`.env_example`** (sem ponto antes de `example`). Copie-o para `.env`:
 
@@ -245,7 +243,7 @@ copy .env_example .env
 cp .env_example .env
 ```
 
-### 5.2 Preencher com os valores do Supabase
+### 4.2 Preencher com os valores do Supabase
 
 Abra o `.env` em um editor de texto e preencha:
 
@@ -270,15 +268,15 @@ MAX_RETRIES=3
 
 ---
 
-## Passo 6 — Subir o Docker (LocalStack)
+## Passo 5 — Subir o Docker (LocalStack)
 
 O `docker-compose.yml` sobe **apenas o LocalStack**, responsável por emular as filas SQS e o bucket S3 (não há mais PostgreSQL local — o banco agora é o Supabase, na nuvem).
 
-### 6.1 Abrir o Docker Desktop
+### 5.1 Abrir o Docker Desktop
 
 Garanta que o ícone da baleia esteja ativo na barra de tarefas/menu antes de continuar.
 
-### 6.2 Subir o container
+### 5.2 Subir o container
 
 No terminal (com o ambiente conda ativado, dentro da pasta do projeto):
 
@@ -288,7 +286,7 @@ docker-compose up -d
 
 > Aguarde ~15 segundos para o LocalStack terminar de inicializar.
 
-### 6.3 Verificar se está rodando
+### 5.3 Verificar se está rodando
 
 ```bash
 docker ps
@@ -305,7 +303,7 @@ Resposta esperada (resumida):
 {"services": {"sqs": "available", "s3": "available"}, ...}
 ```
 
-### 6.4 (Opcional) Configurar o AWS CLI com credenciais falsas
+### 5.4 (Opcional) Configurar o AWS CLI com credenciais falsas
 
 Só necessário se você instalou o AWS CLI e quer inspecionar filas/bucket manualmente:
 
@@ -321,7 +319,7 @@ aws configure
 
 ---
 
-## Passo 7 — Provisionar a infraestrutura com Terraform
+## Passo 6 — Provisionar a infraestrutura com Terraform
 
 O Terraform cria, dentro do LocalStack, as filas SQS usadas pelos 5 consumidores.
 
