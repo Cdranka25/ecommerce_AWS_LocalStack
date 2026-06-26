@@ -6,6 +6,10 @@ A arquitetura reproduz, em pequena escala, um sistema real de e-commerce distrib
 
 **Disciplina:** Sistemas Distribuídos — FURB, 2026/1
 
+![Tela Principal do Sistema, exibindo os produtos disponíveis](docs/mediaForReadme/telaPrincipal.png)
+![Tela de pedidos realizados](docs/mediaForReadme/telaMeusPedidos.png)
+![Tela de acompanhamento de mensageria](docs/mediaForReadme/tela_AWS_explorer.png)
+![Tela de aompanhamento de eventos de mensageria](docs/mediaForReadme/tela_eventos.png)
 ---
 
 ## Sumário
