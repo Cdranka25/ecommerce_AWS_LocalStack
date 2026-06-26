@@ -233,13 +233,13 @@ nav{background:var(--bg2);border-bottom:1px solid var(--border);
 
 <!-- ══ NAVBAR ══════════════════════════════════════════════ -->
 <nav>
-  <div class="nav-brand"><span>🛒</span> TechShop</div>
+  <div class="nav-brand"><span></span> TechShop</div>
   <div class="nav-links" id="nav-links">
     <button class="nav-btn" onclick="showPage('produtos')">Produtos</button>
     <button class="nav-btn" id="nav-enderecos" style="display:none" onclick="showPage('enderecos')">Endereços</button>
     <button class="nav-btn" id="nav-pedidos" style="display:none" onclick="showPage('pedidos')">Meus Pedidos</button>
     <button class="nav-btn" id="nav-carrinho" style="display:none" onclick="showPage('carrinho')">
-      🛒 Carrinho <span class="cart-badge" id="cart-badge">0</span>
+      Carrinho <span class="cart-badge" id="cart-badge">0</span>
     </button>
     <button class="nav-btn primary" id="btn-auth" onclick="showPage('auth')">Entrar</button>
     <button class="nav-btn" id="btn-logout" style="display:none" onclick="logout()">Sair</button>
@@ -261,7 +261,7 @@ nav{background:var(--bg2);border-bottom:1px solid var(--border);
     </p>
   </div>
   <div class="section">
-    <div class="section-title">🖥️ Produtos disponíveis</div>
+    <div class="section-title">Produtos disponíveis</div>
     <div class="grid" id="grid-produtos">
       <div class="loading-overlay"><div class="spinner"></div> Carregando produtos...</div>
     </div>
@@ -272,7 +272,7 @@ nav{background:var(--bg2);border-bottom:1px solid var(--border);
 <div class="page" id="page-auth">
   <div class="auth-wrap">
     <div class="auth-card">
-      <div class="auth-title">👤 Minha conta</div>
+      <div class="auth-title">Minha conta</div>
       <div class="auth-sub">Entre ou crie sua conta para comprar</div>
       <div class="auth-tabs">
         <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Entrar</div>
@@ -320,19 +320,19 @@ nav{background:var(--bg2);border-bottom:1px solid var(--border);
 <!-- ══ PÁGINA: CARRINHO ════════════════════════════════════ -->
 <div class="page" id="page-carrinho">
   <div class="cart-page">
-    <div class="section-title">🛒 Carrinho</div>
+    <div class="section-title"> Carrinho</div>
     <div id="cart-items"></div>
     <div id="cart-checkout" style="display:none">
       <!-- Seleção de endereço -->
       <div class="form-card" style="margin-top:1.25rem">
-        <div class="form-title">📍 Endereço de entrega</div>
+        <div class="form-title"> Endereço de entrega</div>
         <div class="enderecos-grid" id="cart-enderecos"></div>
         <button class="btn" onclick="showPage('enderecos')" style="font-size:12px">+ Cadastrar novo endereço</button>
       </div>
 
       <!-- Cálculo de frete -->
       <div class="form-card" style="margin-top:1rem">
-        <div class="form-title">🚚 Opções de frete</div>
+        <div class="form-title">Opções de frete</div>
         <div id="frete-resultado">
           <p style="color:var(--muted);font-size:.875rem">Selecione um endereço para calcular o frete.</p>
         </div>
@@ -340,7 +340,7 @@ nav{background:var(--bg2);border-bottom:1px solid var(--border);
 
       <!-- Forma de pagamento -->
       <div class="form-card" style="margin-top:1rem">
-        <div class="form-title">💳 Forma de pagamento</div>
+        <div class="form-title"> Forma de pagamento</div>
         <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.5rem">
           <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.875rem">
             <input type="radio" name="pagto" value="pix" checked style="accent-color:var(--accent)"> PIX (instantâneo)
@@ -362,11 +362,11 @@ nav{background:var(--bg2);border-bottom:1px solid var(--border);
       </div>
       <button class="btn btn-green" style="width:100%;margin-top:1rem;justify-content:center;font-size:1rem;padding:12px"
         onclick="finalizarPedido()" id="btn-finalizar">
-        ✅ Finalizar Pedido
+         Finalizar Pedido
       </button>
     </div>
     <div id="cart-empty" class="empty" style="display:none">
-      <div class="empty-icon">🛒</div>
+      <div class="empty-icon"></div>
       <div class="empty-text">Seu carrinho está vazio.</div>
       <button class="btn btn-primary" style="margin-top:1rem" onclick="showPage('produtos')">Ver produtos</button>
     </div>
@@ -376,7 +376,7 @@ nav{background:var(--bg2);border-bottom:1px solid var(--border);
 <!-- ══ PÁGINA: ENDEREÇOS ═══════════════════════════════════ -->
 <div class="page" id="page-enderecos">
   <div class="section">
-    <div class="section-title">📍 Meus Endereços</div>
+    <div class="section-title"> Meus Endereços</div>
     <div class="enderecos-grid" id="lista-enderecos"></div>
     <div class="form-card">
       <div class="form-title">Cadastrar novo endereço</div>
@@ -403,7 +403,7 @@ nav{background:var(--bg2);border-bottom:1px solid var(--border);
         </div>
       </div>
       <div class="form-actions">
-        <button class="btn btn-primary" onclick="salvarEndereco()">💾 Salvar endereço</button>
+        <button class="btn btn-primary" onclick="salvarEndereco()"> Salvar endereço</button>
       </div>
     </div>
   </div>
@@ -413,7 +413,7 @@ nav{background:var(--bg2);border-bottom:1px solid var(--border);
 <div class="page" id="page-pedidos">
   <div class="section">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
-      <div class="section-title" style="margin:0">📦 Meus Pedidos</div>
+      <div class="section-title" style="margin:0"> Meus Pedidos</div>
       <button class="btn" onclick="carregarPedidos()" style="font-size:12px">↻ Atualizar</button>
     </div>
     <div id="lista-pedidos"></div>
@@ -565,10 +565,10 @@ async function doLogin(){
     localStorage.setItem('refreshToken', data.refresh_token);
     localStorage.setItem('userInfo', JSON.stringify(userInfo));
     atualizarNavAuth();
-    toast(`Bem-vindo, ${userInfo.nome || userInfo.email}! 👋`, 'success');
+    toast(`Bem-vindo, ${userInfo.nome || userInfo.email}! `, 'success');
     showPage('produtos');
   } catch(e){
-    document.getElementById('auth-msg').innerHTML = `<div class="auth-error">⚠️ ${e.message}</div>`;
+    document.getElementById('auth-msg').innerHTML = `<div class="auth-error"> ${e.message}</div>`;
   }
 }
 
@@ -582,11 +582,11 @@ async function doRegister(){
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({nome, email, senha})
     });
-    document.getElementById('auth-msg').innerHTML = `<div class="auth-success">✅ Conta criada! Faça login.</div>`;
+    document.getElementById('auth-msg').innerHTML = `<div class="auth-success"> Conta criada! Faça login.</div>`;
     switchAuthTab('login');
     document.getElementById('login-email').value = email;
   } catch(e){
-    document.getElementById('auth-msg').innerHTML = `<div class="auth-error">⚠️ ${e.message}</div>`;
+    document.getElementById('auth-msg').innerHTML = `<div class="auth-error"> ${e.message}</div>`;
   }
 }
 
@@ -621,14 +621,14 @@ async function carregarProdutos(){
   try {
     produtos = await apiFetch('/produtos');
     if(!produtos.length){
-      g.innerHTML = '<div class="empty"><div class="empty-icon">📦</div><div class="empty-text">Nenhum produto cadastrado.</div></div>';
+      g.innerHTML = '<div class="empty"><div class="empty-icon"></div><div class="empty-text">Nenhum produto cadastrado.</div></div>';
       return;
     }
     g.innerHTML = produtos.map(p => `
       <div class="card" onclick="abrirModal('${p.id}')">
         <div class="card-img">
           ${p.imagem_url
-            ? `<img src="${p.imagem_url}" alt="${p.nome}" loading="lazy" onerror="this.parentNode.textContent='🖥️'">`
+            ? `<img src="${p.imagem_url}" alt="${p.nome}" loading="lazy" onerror="this.parentNode.textContent=''">`
             : '🖥️'}
         </div>
         <div class="card-body">
@@ -844,7 +844,7 @@ async function finalizarPedido(){
   } catch(e){
     toast(`Erro: ${e.message}`, 'error');
   } finally {
-    btn.disabled=false; btn.textContent='✅ Finalizar Pedido';
+    btn.disabled=false; btn.textContent='Finalizar Pedido';
   }
 }
 
@@ -913,7 +913,7 @@ async function buscarCEP(){
   document.getElementById('end-cidade').value = d.localidade || '';
   document.getElementById('end-uf').value     = d.uf         || '';
   document.getElementById('end-numero').focus();
-  toast('Endereço preenchido ✅','success');
+  toast('Endereço preenchido ','success');
 }
 
 function formatCEP(el){
@@ -964,14 +964,14 @@ async function deletarEndereco(id){
 // ═══════════════════════════════════════════════════════════
 async function carregarPedidos(){
   if(!token){
-    document.getElementById('lista-pedidos').innerHTML = '<div class="empty"><div class="empty-icon">🔒</div><div class="empty-text">Faça login para ver seus pedidos.</div></div>';
+    document.getElementById('lista-pedidos').innerHTML = '<div class="empty"><div class="empty-icon"></div><div class="empty-text">Faça login para ver seus pedidos.</div></div>';
     return;
   }
   document.getElementById('lista-pedidos').innerHTML = '<div class="loading-overlay"><div class="spinner"></div> Carregando pedidos...</div>';
   try{
     const pedidos = await apiFetch('/pedidos',{headers:authHeader()});
     if(!pedidos.length){
-      document.getElementById('lista-pedidos').innerHTML = '<div class="empty"><div class="empty-icon">📦</div><div class="empty-text">Nenhum pedido ainda.</div><button class="btn btn-primary" style="margin-top:1rem" onclick="showPage(\'produtos\')">Comprar agora</button></div>';
+      document.getElementById('lista-pedidos').innerHTML = '<div class="empty"><div class="empty-icon"></div><div class="empty-text">Nenhum pedido ainda.</div><button class="btn btn-primary" style="margin-top:1rem" onclick="showPage(\'produtos\')">Comprar agora</button></div>';
       return;
     }
     document.getElementById('lista-pedidos').innerHTML = pedidos.map(p=>`

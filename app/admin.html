@@ -21,9 +21,9 @@
 
 <!-- ABAS -->
 <div class="abas">
-  <div class="aba ativa" onclick="irAba('visao-geral')">📊 Visão Geral</div>
-  <div class="aba" onclick="irAba('eventos')">📨 Eventos</div>
-  <div class="aba" id="aba-dlq" onclick="irAba('dlq')">💀 Dead Letter Queue <span class="badge-aba zero" id="badge-dlq">0</span></div>
+  <div class="aba ativa" onclick="irAba('visao-geral')"> Visão Geral</div>
+  <div class="aba" onclick="irAba('eventos')"> Eventos</div>
+  <div class="aba" id="aba-dlq" onclick="irAba('dlq')"> Dead Letter Queue <span class="badge-aba zero" id="badge-dlq">0</span></div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════
@@ -105,13 +105,12 @@
           <th>Conteúdo</th>
         </tr>
       </thead>
-      <tbody><tr><td colspan="5" class="vazio">Nenhuma mensagem na DLQ — tudo processando normalmente. ✅</td></tr></tbody>
+      <tbody><tr><td colspan="5" class="vazio">Nenhuma mensagem na DLQ — tudo processando normalmente. </td></tr></tbody>
     </table>
   </div>
 
-  <div style="color:var(--muted);font-size:11px;margin-top:12px;">
-    Para simular uma DLQ: envie uma mensagem inválida para qualquer fila SQS ou force uma exceção em um consumidor. Após 3 tentativas com falha, a mensagem aparece aqui.
-  </div>
+  <!-- Painel de simulação -->
+  <div id="simulador-dlq" style="margin-top:24px;"></div>
 
 </div>
 
@@ -123,5 +122,6 @@
 <script src="js/admin/eventos.js"></script>
 <script src="js/admin/dlq.js"></script>
 <script src="js/admin/main.js"></script>
+<script src="js/admin/simular.js"></script>
 </body>
 </html>

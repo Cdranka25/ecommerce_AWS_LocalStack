@@ -22,6 +22,7 @@ A arquitetura reproduz, em pequena escala, um sistema real de e-commerce distrib
 - [Passo 6 — Provisionar a infraestrutura com Terraform](#passo-6--provisionar-a-infraestrutura-com-terraform)
 - [Passo 7 — Iniciar a API, o frontend e os consumidores](#passo-7--iniciar-a-api-o-frontend-e-os-consumidores)
 - [Passo 8 — Testar o sistema](#passo-8--testar-o-sistema)
+- [AWS Explorer](#aws-explorer)
 - [Endpoints da API](#endpoints-da-api)
 - [Fluxo do sistema](#fluxo-do-sistema)
 - [Como parar tudo](#como-parar-tudo)
@@ -74,49 +75,49 @@ Esse desenho demonstra, na prática, conceitos de **sistemas distribuídos**: co
 ecommerce_AWS_LocalStack/
 ├── api/
 │   ├── main.py              # FastAPI — todos os endpoints
-│   ├── auth.py               # Validação do JWT do Supabase
-│   ├── models.py              # Schemas de validação (Pydantic)
-│   ├── viacep.py               # Consulta ViaCEP (valida/completa CEP)
-│   └── correios.py              # Cálculo de frete PAC + SEDEX
+│   ├── auth.py              # Validação do JWT do Supabase
+│   ├── models.py            # Schemas de validação (Pydantic)
+│   ├── viacep.py            # Consulta ViaCEP (valida/completa CEP)
+│   └── correios.py          # Cálculo de frete PAC + SEDEX
 ├── config/
-│   ├── settings.py           # Leitura das variáveis de ambiente (.env)
-│   ├── supabase_client.py     # Cliente Supabase (anon + admin)
-│   └── sqs.py                  # Cliente SQS, publicação e consumo de filas
-├── consumidores/                # Os 5 serviços assíncronos
-│   ├── _base.py               # registrar_evento() — grava histórico no Supabase
+│   ├── settings.py          # Leitura das variáveis de ambiente (.env)
+│   ├── supabase_client.py   # Cliente Supabase (anon + admin)
+│   └── sqs.py               # Cliente SQS, publicação e consumo de filas
+├── consumidores/            # Os 5 serviços assíncronos
+│   ├── _base.py             # registrar_evento() — grava histórico no Supabase
 │   ├── pagamento.py
 │   ├── estoque.py
-│   ├── fiscal.py                # Gera NF-e e salva no S3 (LocalStack)
+│   ├── fiscal.py            # Gera NF-e e salva no S3 (LocalStack)
 │   ├── logistica.py
 │   └── notificacao.py
 ├── infra/
-│   └── main.tf                # Terraform: cria as filas SQS no LocalStack
-├── app/                          # Frontend (HTML, CSS e JS separados)
-│   ├── index.html              # Loja — apenas marcação HTML
-│   ├── admin.html              # AWS Explorer — apenas marcação HTML
+│   └── main.tf              # Terraform: cria as filas SQS no LocalStack
+├── app/                     # Frontend (HTML, CSS e JS separados)
+│   ├── index.html           # Loja — marcação HTML
+│   ├── admin.html           # AWS Explorer — marcação HTML
 │   ├── css/
-│   │   ├── loja.css            # Estilos da loja
-│   │   └── admin.css           # Estilos do AWS Explorer
+│   │   ├── loja.css         # Estilos da loja
+│   │   └── admin.css        # Estilos do AWS Explorer
 │   └── js/
-│       ├── loja/                # Lógica da loja: config, auth, produtos,
-│       │                        # carrinho, endereços, pedidos, main
-│       └── admin/               # Lógica do AWS Explorer: filas, S3, eventos, DLQ
+│       ├── loja/            # Lógica da loja: config, auth, produtos,
+│       │                    # carrinho, endereços, pedidos, main
+│       └── admin/           # Lógica do AWS Explorer: filas, S3, eventos, DLQ, simulador
 ├── docs/
 │   ├── Comandos AWS CLI/
-│   │   └── README.md           # Comandos úteis do AWS CLI para o LocalStack
+│   │   └── README.md        # Comandos úteis do AWS CLI para o LocalStack
 │   ├── Comandos SQL/
-│   │   ├── supabase_schema.sql         # Script SQL para criar as tabelas no Supabase
-│   │   └── supabase_insert_product.sql # Inserts extras de produtos (opcional)
-│   └── Definição/                # Diagramas e documento de definição do trabalho
+│   │   ├── supabase_schema.sql          # Script SQL para criar as tabelas
+│   │   └── supabase_insert_product.sql  # Inserts extras de produtos (opcional)
+│   └── Definição/           # Diagramas e documento de definição do trabalho
 ├── scripts/
-│   ├── start_all.bat          # Inicia tudo no Windows (Anaconda base)
-│   └── start_all.sh           # Inicia tudo no Linux/Mac
-├── logs/                       # Logs gerados pelos serviços
-├── launcher_server.py          # Inicia TUDO automaticamente (recomendado)
-├── check_env.py                 # Utilitário de debug do token JWT (opcional)
-├── docker-compose.yml           # Sobe o LocalStack (SQS + S3)
+│   ├── start_all.bat        # Inicia tudo no Windows (Anaconda base)
+│   └── start_all.sh         # Inicia tudo no Linux/Mac
+├── logs/                    # Logs gerados pelos serviços (criada automaticamente)
+├── launcher_server.py       # Inicia TUDO automaticamente (recomendado)
+├── check_env.py             # Utilitário de debug do token JWT (opcional)
+├── docker-compose.yml       # Sobe o LocalStack (SQS + S3)
 ├── requirements.txt
-└── .env_example                  # Modelo do arquivo de variáveis de ambiente
+└── .env_example             # Modelo do arquivo de variáveis de ambiente
 ```
 
 ---
@@ -133,18 +134,28 @@ Instale as ferramentas abaixo **antes de começar**:
 | **AWS CLI** *(opcional)* | https://aws.amazon.com/cli/ | Inspecionar filas/bucket no LocalStack pelo terminal |
 | **Conta no Supabase** | https://supabase.com | Banco de dados + autenticação em nuvem (gratuito) |
 
-> **Sobre o Terraform:** é necessário criar uma pasta de nome Terraform no disco, e colar o executável dentro da pasta. Após isso, é necessário inserir o caminho no PATH, dentro das variáveis do sistema. 
+> **Sobre o Terraform:** crie uma pasta `Terraform` no disco, cole o executável dentro e adicione o caminho ao PATH nas variáveis de sistema. Se ocorrer erro por conflito de versão, execute:
+> ```bash
+> cd infra
+> del .terraform.lock.hcl        # Windows
+> rd /s /q .terraform             # Windows
+> terraform init -upgrade
+> terraform apply -auto-approve
+> ```
 
-> **Sobre o AWS CLI:** não é obrigatório para o projeto funcionar — o LocalStack substitui a AWS real e o `boto3` (já incluso no `requirements.txt`) é quem fala com ele. O AWS CLI serve apenas como ferramenta extra para inspecionar filas e o bucket manualmente.
-Dentro do CMD, execute o comando: 
-  aws configure
-Pedirá as seguintes informações:
-  AWS Access Key ID:
-  AWS Secret Access Key:
-  Default region name:
-  Default output format:
+> **Sobre o AWS CLI:** não é obrigatório para o projeto funcionar. Serve apenas para inspecionar filas e o bucket manualmente. Após instalar, configure com:
+> ```bash
+> aws configure
+> ```
+> Preencha com os seguintes valores (credenciais falsas aceitas pelo LocalStack):
+> ```
+> AWS Access Key ID:     test
+> AWS Secret Access Key: test
+> Default region name:   us-east-1
+> Default output format: json
+> ```
 
-Depois de instalar, abra o **Anaconda Prompt** (Windows) ou um terminal com o conda inicializado (Mac/Linux) e confira as versões:
+Após instalar tudo, abra o **Anaconda Prompt** e confira as versões:
 
 ```bash
 conda --version
@@ -168,7 +179,7 @@ conda create -n ecommerce-sd python=3.11 -y
 conda activate ecommerce-sd
 ```
 
-> Mantenha esse ambiente **ativado** (`conda activate ecommerce-sd`) em **todo terminal novo** que você abrir para rodar qualquer parte do projeto (API, consumidores, scripts).
+> Mantenha esse ambiente **ativado** (`conda activate ecommerce-sd`) em **todo terminal novo** que você abrir para rodar qualquer parte do projeto.
 
 ### 1.2 Instalar as dependências
 
@@ -178,7 +189,7 @@ pip install -r requirements.txt
 
 Isso instala: FastAPI, Uvicorn, Supabase SDK, httpx, Pydantic, python-dotenv, python-jose, passlib, boto3 e python-multipart.
 
-> **Sobre o `scripts\start_all.bat`:** esse script localiza automaticamente o Python do **ambiente base** do Anaconda (não de um ambiente conda customizado). Se você criar um ambiente próprio (`ecommerce-sd`), use o `launcher_server.py` (Passo 7) ou o modo manual para iniciar os serviços — eles funcionam corretamente com qualquer ambiente ativado. Alternativamente, instale as dependências direto no ambiente `base` do Anaconda para usar o `.bat` sem ajustes.
+> **Sobre o `scripts\start_all.bat`:** localiza automaticamente o Python do ambiente **base** do Anaconda. Se você criou um ambiente próprio (`ecommerce-sd`), use o `launcher_server.py` ou o modo manual.
 
 ---
 
@@ -190,13 +201,13 @@ Isso instala: FastAPI, Uvicorn, Supabase SDK, httpx, Pydantic, python-dotenv, py
 2. Crie uma conta com Google, GitHub ou e-mail (gratuito).
 3. Clique em **New Project** e preencha:
    - **Name:** `ecommerce-sd`
-   - **Database Password:** anote esta senha — você vai usá-la (opcionalmente) no `.env`.
+   - **Database Password:** anote esta senha.
    - **Region:** `South America (São Paulo)`
 4. Clique em **Create new project** e aguarde cerca de 2 minutos.
 
 ### 2.2 Coletar as chaves da API
 
-No painel do projeto: menu lateral → **Settings** (ícone de engrenagem) → **API**.
+No painel do projeto: menu lateral → **Settings** → **API**.
 
 | Variável | Onde encontrar no painel |
 |---|---|
@@ -213,19 +224,15 @@ No painel do projeto: menu lateral → **Settings** (ícone de engrenagem) → *
 2. Desative a opção **Confirm email**.
 3. Clique em **Save**.
 
-> Em um ambiente de produção real, mantenha essa opção ativada.
-
 ---
 
 ## Passo 3 — Criar as tabelas no Supabase (SQL)
 
 1. No painel do Supabase, abra **SQL Editor** (menu lateral).
 2. Clique em **New Query**.
-3. Abra o arquivo `docs/supabase_schema.sql` do projeto, copie todo o conteúdo e cole no editor.
+3. Abra o arquivo `docs/Comandos SQL/supabase_schema.sql`, copie todo o conteúdo e cole no editor.
 4. Clique em **Run** (ou `Ctrl+Enter`).
 5. Deve aparecer: `Success. No rows returned`.
-
-Obs.: Pode ser utilizado os comandos existentes na pasta docs/Comandos SQL
 
 ### Tabelas criadas
 
@@ -236,15 +243,13 @@ Obs.: Pode ser utilizado os comandos existentes na pasta docs/Comandos SQL
 | `pedidos` | Cada compra realizada, com status do processamento |
 | `eventos_pedido` | Linha do tempo de eventos gerados pelos 5 consumidores |
 
-Confirme em **Table Editor** (menu lateral) que as 4 tabelas existem e que `produtos` tem linhas. Se quiser produtos extras, rode também `docs/supabase_insert_product.sql` no SQL Editor.
+Confirme em **Table Editor** que as 4 tabelas existem e que `produtos` tem linhas. Se quiser produtos extras, rode também `docs/Comandos SQL/supabase_insert_product.sql`.
 
 ---
 
 ## Passo 4 — Configurar o arquivo `.env`
 
 ### 4.1 Criar o arquivo a partir do modelo
-
-O arquivo de modelo se chama **`.env_example`** (sem ponto antes de `example`). Copie-o para `.env`:
 
 ```bash
 # Windows (cmd / Anaconda Prompt)
@@ -264,9 +269,9 @@ SUPABASE_URL=https://xxxxxxxxxxxxxxxxxxxx.supabase.co
 SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 JWT_SECRET=sua-jwt-secret-aqui
-PROJECT_PASSWORD=senha-do-banco-no-supabase   # apenas anotação, não é lida pelo código
+PROJECT_PASSWORD=senha-do-banco-no-supabase   # apenas anotação
 
-# ── LocalStack / AWS (em geral não precisa alterar) ─────────
+# ── LocalStack / AWS (não precisa alterar) ─────────
 AWS_ENDPOINT_URL=http://localhost:4566
 AWS_REGION=us-east-1
 AWS_ACCESS_KEY_ID=test
@@ -281,42 +286,33 @@ MAX_RETRIES=3
 
 ## Passo 5 — Subir o Docker (LocalStack)
 
-O `docker-compose.yml` sobe **apenas o LocalStack**, responsável por emular as filas SQS e o bucket S3 (não há mais PostgreSQL local — o banco agora é o Supabase, na nuvem).
+O `docker-compose.yml` sobe apenas o LocalStack, que emula as filas SQS e o bucket S3 localmente.
 
 ### 5.1 Abrir o Docker Desktop
 
-Garanta que o ícone da baleia esteja ativo na barra de tarefas/menu antes de continuar.
+Garanta que o ícone da baleia esteja ativo na barra de tarefas antes de continuar.
 
 ### 5.2 Subir o container
-
-No terminal (com o ambiente conda ativado, dentro da pasta do projeto):
 
 ```bash
 docker-compose up -d
 ```
 
-> Aguarde ~15 segundos para o LocalStack terminar de inicializar.
+> Aguarde ~15 segundos para o LocalStack inicializar.
 
 ### 5.3 Verificar se está rodando
 
 ```bash
 docker ps
-```
-
-Deve aparecer uma linha com `localstack/localstack` e o container `ecommerce_localstack`.
-
-```bash
 curl http://localhost:4566/_localstack/health
 ```
 
-Resposta esperada (resumida):
+Resposta esperada:
 ```json
 {"services": {"sqs": "available", "s3": "available"}, ...}
 ```
 
-### 5.4 (Opcional) Configurar o AWS CLI com credenciais falsas
-
-Só necessário se você instalou o AWS CLI e quer inspecionar filas/bucket manualmente:
+### 5.4 (Opcional) Configurar o AWS CLI
 
 ```bash
 aws configure
@@ -326,15 +322,13 @@ aws configure
 # Default output format: json
 ```
 
-> O LocalStack aceita qualquer valor — use `test`. Não é a AWS real, então nenhuma cobrança é gerada.
-
 ---
 
 ## Passo 6 — Provisionar a infraestrutura com Terraform
 
-O Terraform cria, dentro do LocalStack, as filas SQS usadas pelos 5 consumidores.
+> **Atenção:** se você usar o `launcher_server.py` (Passo 7 — Opção A), este passo é feito **automaticamente**. Só execute manualmente se for usar outra forma de inicialização.
 
-### Recursos criados (`infra/main.tf`)
+O Terraform cria as filas SQS e a DLQ dentro do LocalStack:
 
 - `sqs-pedidos-pagamento`
 - `sqs-pedidos-estoque`
@@ -343,70 +337,45 @@ O Terraform cria, dentro do LocalStack, as filas SQS usadas pelos 5 consumidores
 - `sqs-pedidos-notificacao`
 - `sqs-dead-letter` (DLQ — recebe mensagens que falharam 3 vezes)
 
-### Comandos
-
 ```bash
-# Entrar na pasta de infraestrutura
 cd infra
-
-# Inicializar o provider AWS (só precisa rodar uma vez)
-terraform init
-
-# (opcional) ver o que será criado
-terraform plan
-
-# Criar os recursos no LocalStack
+terraform init        # apenas na primeira vez
 terraform apply -auto-approve
-
-# Voltar para a raiz do projeto
 cd ..
 ```
 
 ### Criar o bucket S3 para as notas fiscais
 
-O bucket não é criado pelo Terraform — crie via AWS CLI ou via Python:
+> O `launcher_server.py` também cria o bucket automaticamente. Se precisar criar manualmente:
 
 ```bash
-# Com AWS CLI instalado
+# Com AWS CLI
 aws --endpoint-url=http://localhost:4566 s3 mb s3://ecommerce-notas-fiscais
 
-# Alternativa via Python (sem precisar do AWS CLI)
+# Sem AWS CLI (só Python)
 python -c "import boto3; boto3.client('s3', endpoint_url='http://localhost:4566', region_name='us-east-1', aws_access_key_id='test', aws_secret_access_key='test').create_bucket(Bucket='ecommerce-notas-fiscais')"
 ```
 
-### Verificar as filas criadas
-
-```bash
-aws --endpoint-url=http://localhost:4566 sqs list-queues
-```
-
-Devem aparecer 6 URLs: as 5 filas `sqs-pedidos-*` e a `sqs-dead-letter`.
-
-> **Importante:** sempre que o container do Docker for reiniciado, o LocalStack perde os dados (incluindo as filas). Rode `terraform apply -auto-approve` novamente após qualquer `docker-compose down`/restart. O `launcher_server.py` (próximo passo) já faz isso automaticamente para você.
+> **Importante:** o LocalStack perde todos os dados (filas + bucket) ao ser reiniciado. O `launcher_server.py` recria tudo automaticamente a cada inicialização.
 
 ---
 
 ## Passo 7 — Iniciar a API, o frontend e os consumidores
 
-Existem três formas de iniciar o sistema. Escolha a que preferir.
-
-### Opção A — `launcher_server.py` (recomendado, multiplataforma quando ativado em conda)
-
-Com o ambiente conda **ativado**, na raiz do projeto:
+### ✅ Opção A — `launcher_server.py` (recomendado)
 
 ```bash
 python launcher_server.py
 ```
 
-Esse script faz tudo sozinho:
-1. Aguarda o LocalStack ficar disponível e roda `terraform apply` automaticamente;
-2. Sobe a API FastAPI (porta 8000);
-3. Sobe os 5 consumidores em segundo plano (logs em `logs/`);
-4. Sobe o frontend (porta 3000) e **abre o navegador automaticamente**.
+Esse script faz tudo automaticamente:
+1. Aguarda o LocalStack e roda `terraform init` + `terraform apply`;
+2. Cria o bucket S3;
+3. Sobe a API FastAPI (porta 8000);
+4. Sobe os 5 consumidores em segundo plano (logs em `logs/`);
+5. Sobe o frontend (porta 3000) e abre o navegador.
 
-Para encerrar, pressione `CTRL+C` no terminal onde ele está rodando.
-
-> Funciona em Windows — usa recursos específicos do Windows (`taskkill`, processos sem janela) para gerenciar os serviços em segundo plano.
+Para encerrar, pressione `CTRL+C` — todos os processos em background são encerrados automaticamente.
 
 ### Opção B — Scripts `start_all`
 
@@ -414,22 +383,16 @@ Para encerrar, pressione `CTRL+C` no terminal onde ele está rodando.
 # Windows (Anaconda Prompt, ambiente "base")
 scripts\start_all.bat
 
-# Mac/Linux (com o ambiente conda ativado)
+# Mac/Linux
 bash scripts/start_all.sh
 ```
 
-Abre um processo/janela por serviço (API, frontend e os 5 consumidores).
-
-> No Windows, o `start_all.bat` localiza automaticamente o Python do ambiente **base** do Anaconda — não de ambientes conda customizados.
-
 ### Opção C — Manual (um terminal por processo)
-
-Útil para depurar um serviço específico. Em **cada terminal**, ative o ambiente conda (`conda activate ecommerce-sd`) e rode:
 
 | Terminal | Comando | O que faz |
 |---|---|---|
 | 1 | `uvicorn api.main:app --reload --port 8000` | API FastAPI |
-| 2 | `python launcher_server.py` *(ou um servidor estático simples)* | Frontend, porta 3000 |
+| 2 | `python launcher_server.py` | Frontend, porta 3000 |
 | 3 | `python consumidores/pagamento.py` | Consumidor de pagamento |
 | 4 | `python consumidores/estoque.py` | Consumidor de estoque |
 | 5 | `python consumidores/fiscal.py` | Consumidor fiscal + S3 |
@@ -443,7 +406,7 @@ curl http://localhost:8000/
 # Resposta esperada: {"status": "ok", "versao": "2.0.0", ...}
 ```
 
-Documentação interativa (Swagger): **http://localhost:8000/docs**
+Swagger (documentação interativa): **http://localhost:8000/docs**
 
 ---
 
@@ -461,7 +424,7 @@ Acesse **http://localhost:3000** e siga o fluxo:
 6. Cadastre um **Endereço** (o CEP é preenchido automaticamente via ViaCEP).
 7. Selecione o endereço — o frete PAC e SEDEX é calculado automaticamente.
 8. Escolha a forma de pagamento e clique em **Finalizar Pedido**.
-9. Em **Meus Pedidos**, clique em **Ver detalhes** para acompanhar, em tempo real, o processamento por cada um dos 5 serviços.
+9. Em **Meus Pedidos**, clique em **Ver detalhes** para acompanhar em tempo real o processamento pelos 5 serviços.
 
 ### Via curl (linha de comando)
 
@@ -476,30 +439,52 @@ curl -X POST http://localhost:8000/auth/login \
   -H "Content-Type: application/json" \
   -d "{\"email\":\"teste@email.com\",\"senha\":\"Senha123!\"}"
 
-# 3. Ver produtos (copie o "id" de um produto)
+# 3. Ver produtos
 curl http://localhost:8000/produtos
 
 # 4. Calcular frete
 curl "http://localhost:8000/frete?cep=89010000"
 
-# 5. Cadastrar endereço (substitua TOKEN pelo access_token do login)
+# 5. Cadastrar endereço
 curl -X POST http://localhost:8000/enderecos \
   -H "Authorization: Bearer TOKEN" \
   -H "Content-Type: application/json" \
   -d "{\"apelido\":\"Casa\",\"cep\":\"89010000\",\"logradouro\":\"Rua Sete de Setembro\",\"numero\":\"100\",\"bairro\":\"Centro\",\"cidade\":\"Blumenau\",\"uf\":\"SC\",\"principal\":true}"
 
-# 6. Criar pedido (substitua PRODUTO_ID e ENDERECO_ID pelos IDs retornados acima)
+# 6. Criar pedido
 curl -X POST http://localhost:8000/pedidos \
   -H "Authorization: Bearer TOKEN" \
   -H "Content-Type: application/json" \
   -d "{\"produto_id\":\"PRODUTO_ID\",\"quantidade\":1,\"endereco_id\":\"ENDERECO_ID\",\"forma_pagamento\":\"pix\"}"
 
-# 7. Ver status do pedido (substitua PEDIDO_ID pelo id retornado acima)
+# 7. Ver status do pedido
 curl http://localhost:8000/pedidos/PEDIDO_ID \
   -H "Authorization: Bearer TOKEN"
 ```
 
-> No Windows (cmd), aspas duplas escapadas (`\"`) funcionam como acima. No PowerShell ou Git Bash, prefira aspas simples envolvendo o JSON.
+> No Windows (cmd), use as barras invertidas para escape (`\"`). No PowerShell, prefira aspas simples envolvendo o JSON.
+
+---
+
+## AWS Explorer
+
+O AWS Explorer é uma interface de administração disponível em **http://localhost:3000/admin.html**. Ele atualiza automaticamente a cada 4 segundos e possui três abas:
+
+### 📊 Visão Geral
+Mostra o estado atual das 6 filas SQS (mensagens disponíveis e em processamento) e os arquivos de notas fiscais no bucket S3.
+
+### 📨 Eventos
+Exibe em tempo real todos os eventos registrados pelos 5 consumidores ao processar pedidos. Possui filtro por serviço (pagamento, estoque, fiscal, logística, notificação) e botão de pausa.
+
+### 💀 Dead Letter Queue
+Mostra as mensagens que falharam 3 vezes e foram movidas para a fila `sqs-dead-letter`, com número de tentativas, horário e conteúdo de cada mensagem.
+
+Inclui também um **painel de simulação de DLQ**, que permite enviar mensagens inválidas para qualquer fila para demonstrar o mecanismo de retry e DLQ:
+
+1. Escolha a **fila de destino**
+2. Selecione um **preset** (JSON inválido, corpo vazio, campo faltando, etc.) ou escreva sua própria mensagem
+3. Clique em **⚡ Enviar para a fila**
+4. Acompanhe a linha do tempo: o consumidor tentará processar 3 vezes, falhará e a mensagem aparecerá na DLQ em ~90 segundos
 
 ---
 
@@ -520,6 +505,7 @@ curl http://localhost:8000/pedidos/PEDIDO_ID \
 | `POST` | `/pedidos` | Sim | Cria um pedido (publica nas filas SQS) |
 | `GET` | `/pedidos` | Sim | Lista pedidos do usuário logado |
 | `GET` | `/pedidos/{id}` | Sim | Detalha o pedido e os eventos de processamento |
+| `GET` | `/admin/eventos` | Não | Lista eventos recentes (uso interno — AWS Explorer) |
 | `GET` | `/` | Não | Health check da API |
 
 Documentação interativa completa em **http://localhost:8000/docs**.
@@ -550,6 +536,9 @@ Pagamento  Estoque    Fiscal    Logística     Notificação
                                                 (Supabase)
     │
     └──── todos os serviços registram eventos em eventos_pedido (Supabase)
+
+Falha em qualquer consumidor (3x):
+    └─► mensagem vai para sqs-dead-letter (DLQ) automaticamente
 ```
 
 ---
@@ -557,11 +546,10 @@ Pagamento  Estoque    Fiscal    Logística     Notificação
 ## Como parar tudo
 
 ```bash
-# Encerrar a API, o frontend e os consumidores: CTRL+C no(s) terminal(is) ou,
-# se usou o launcher_server.py / start_all.bat, feche as janelas/processos abertos.
+# Encerrar via launcher_server.py: pressione CTRL+C no terminal
+# Todos os processos em background são encerrados automaticamente.
 
-# Parar as tarefas
-# Windows:
+# Se precisar forçar no Windows:
 taskkill /F /IM python.exe
 
 # Mac/Linux:
@@ -576,7 +564,7 @@ docker-compose down
 conda deactivate
 ```
 
-> Lembre-se: ao subir o LocalStack novamente, é preciso rodar `terraform apply -auto-approve` de novo (ou usar o `launcher_server.py`, que faz isso automaticamente).
+> Lembre-se: ao subir o LocalStack novamente, o `launcher_server.py` recria filas e bucket automaticamente.
 
 ---
 
@@ -586,25 +574,40 @@ conda deactivate
 O `JWT_SECRET` no `.env` está errado. Copie exatamente de **Settings → API → JWT Settings → JWT Secret** no painel do Supabase.
 
 **Filas SQS não encontradas / erro ao publicar nas filas**
-O LocalStack foi reiniciado e perdeu os dados em memória. Rode `terraform apply -auto-approve` novamente dentro da pasta `infra`.
+O LocalStack foi reiniciado. Execute `python launcher_server.py` — ele recria as filas automaticamente. Ou manualmente: `cd infra && terraform apply -auto-approve`.
 
 **`docker-compose: command not found` ou erro de conexão com o Docker**
-Abra o Docker Desktop e aguarde ele inicializar completamente antes de rodar qualquer comando `docker`.
+Abra o Docker Desktop e aguarde ele inicializar completamente.
 
-**`pip install` falha ou pacotes não são encontrados ao rodar os scripts**
-Confirme que o ambiente conda está ativado no terminal: `conda activate ecommerce-sd`. Se usar o `start_all.bat`, lembre-se que ele usa o Python do ambiente **base** do Anaconda.
+**`pip install` falha ou pacotes não encontrados**
+Confirme que o ambiente conda está ativado: `conda activate ecommerce-sd`.
 
 **`terraform: command not found`**
-O Terraform não está no PATH do sistema. Reinstale seguindo o site oficial e reabra o terminal.
+O Terraform não está no PATH. Adicione o caminho da pasta `Terraform/` às variáveis de ambiente do sistema e reinicie o terminal.
 
-**Produto sem `produto_id`**
-Acesse `http://localhost:8000/produtos` para ver os IDs reais inseridos pelo script SQL.
+**Conflito de versão do Terraform**
+```bash
+cd infra
+del .terraform.lock.hcl
+rd /s /q .terraform
+terraform init -upgrade
+terraform apply -auto-approve
+```
+
+**Bucket S3 não existe (erro NoSuchBucket no AWS Explorer)**
+O `launcher_server.py` cria o bucket automaticamente. Se inicializou manualmente, crie com:
+```bash
+python -c "import boto3; boto3.client('s3', endpoint_url='http://localhost:4566', region_name='us-east-1', aws_access_key_id='test', aws_secret_access_key='test').create_bucket(Bucket='ecommerce-notas-fiscais')"
+```
+
+**Logs cheios de erros `NonExistentQueue`**
+Os consumidores foram iniciados antes das filas existirem. Limpe os logs antigos (`rmdir /s /q logs`) e reinicie com `python launcher_server.py`, que garante a ordem correta.
 
 **Frete retorna valores simulados**
-A API dos Correios/BrasilAPI pode estar fora do ar ou bloqueando a requisição. O sistema possui um fallback automático com valores estimados — isso não impede o funcionamento do fluxo de compra.
+A API dos Correios pode estar fora do ar. O sistema tem fallback automático — o fluxo de compra não é afetado.
 
 **Porta 3000 ou 8000 já em uso**
-Feche processos anteriores (`CTRL+C` nos terminais antigos) ou, no Windows, finalize via Gerenciador de Tarefas processos `python.exe`/`uvicorn.exe` pendentes.
+Feche processos anteriores ou, no Windows, finalize via Gerenciador de Tarefas os processos `python.exe`/`uvicorn.exe` pendentes.
 
 ---
 
@@ -614,18 +617,19 @@ Feche processos anteriores (`CTRL+C` nos terminais antigos) ou, no Windows, fina
 - [ ] `pip install -r requirements.txt` concluído sem erros
 - [ ] Docker Desktop aberto e rodando
 - [ ] `docker-compose up -d` executado
-- [ ] `terraform apply -auto-approve` executado — 6 filas SQS criadas
-- [ ] Bucket S3 `ecommerce-notas-fiscais` criado
-- [ ] Projeto Supabase criado e SQL (`docs/supabase_schema.sql`) executado
+- [ ] Projeto Supabase criado e SQL (`docs/Comandos SQL/supabase_schema.sql`) executado
 - [ ] `.env` preenchido com as chaves do Supabase (a partir do `.env_example`)
+- [ ] `python launcher_server.py` executado (cria filas, bucket, API, consumidores e frontend automaticamente)
 - [ ] API respondendo em http://localhost:8000
 - [ ] Frontend abrindo em http://localhost:3000
-- [ ] 5 consumidores rodando (verificar logs em `logs/` ou os terminais)
+- [ ] AWS Explorer abrindo em http://localhost:3000/admin.html
+- [ ] 5 consumidores rodando (verificar logs em `logs/`)
 - [ ] Cadastro e login de usuário funcionando
 - [ ] Endereço cadastrado com busca de CEP automática
 - [ ] Cálculo de frete retornando PAC e SEDEX
 - [ ] Pedido criado e processado pelos 5 consumidores
-- [ ] Eventos aparecendo em "Meus Pedidos"
+- [ ] Eventos aparecendo em "Meus Pedidos" e na aba Eventos do AWS Explorer
+- [ ] Simulação de DLQ funcionando na aba Dead Letter Queue
 
 ---
 
@@ -638,3 +642,4 @@ Feche processos anteriores (`CTRL+C` nos terminais antigos) ou, no Windows, fina
 | API externa | ViaCEP (validação de CEP) + API dos Correios (frete) |
 | Mínimo de 2 serviços independentes | FastAPI + 5 consumidores Python independentes |
 | Uso de nuvem | Supabase (nuvem real) + LocalStack + Terraform (IaC) |
+| Dead Letter Queue | Fila `sqs-dead-letter` com retry automático (3 tentativas) e simulador integrado |

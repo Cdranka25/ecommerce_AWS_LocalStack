@@ -37,9 +37,5 @@ async function atualizar() {
   } catch {}
 }
 
-function esc(str) {
-  return String(str ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
-
 atualizar();
 setInterval(atualizar, 4000);

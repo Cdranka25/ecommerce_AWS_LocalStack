@@ -7,5 +7,6 @@ function irAba(nome) {
   document.querySelector(`[onclick="irAba('${nome}')"]`).classList.add("ativa");
   document.getElementById(`pagina-${nome}`).classList.add("ativa");
   abaAtiva = nome;
+  if (nome === 'dlq') iniciarSimuladorDLQ();
 }
 

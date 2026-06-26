@@ -78,7 +78,7 @@ def rodar_terraform():
             _log("terraform", "LocalStack respondendo — OK.")
             break
         aguardou = True
-        print(f"\r  ⏳  [terraform] Aguardando LocalStack inicializar... ({i+1}s/30s)", end="", flush=True)
+        print(f"\r    [terraform] Aguardando LocalStack inicializar... ({i+1}s/30s)", end="", flush=True)
         time.sleep(1)
     else:
         print()
@@ -350,7 +350,7 @@ def subir_servicos():
                     break
         except Exception:
             pass
-        print(f"\r  ⏳  [api] Aguardando API... ({tentativa+1}s/20s)", end="", flush=True)
+        print(f"\r    [api] Aguardando API... ({tentativa+1}s/20s)", end="", flush=True)
     else:
         print()
         _log("api", "AVISO: API demorou para responder — verifique logs/api_fastapi.log.")
@@ -382,8 +382,47 @@ def subir_servicos():
     print("=" * 52 + "\n")
 
     time.sleep(0.5)
-    webbrowser.open(f"http://localhost:{PORT}")
+    _abrir_navegador(f"http://localhost:{PORT}")
 
+
+
+def _abrir_navegador(url: str) -> None:
+    """Abre o navegador de forma segura, com fallback para Windows."""
+    try:
+        import webbrowser
+        webbrowser.open(url)
+    except Exception:
+        try:
+            import subprocess
+            subprocess.Popen(["cmd", "/c", "start", url], shell=False)
+        except Exception:
+            print(f"[launcher] Abra manualmente: {url}")
+
+
+
+def simular_dlq(fila_nome: str, mensagem: str) -> dict:
+    """Envia mensagem inválida para a fila escolhida para simular DLQ."""
+    sys.path.insert(0, BASE_DIR)
+    from config.sqs import get_sqs_client
+    from config.settings import TODAS_AS_FILAS, FILA_DLQ
+
+    filas_map = {url.rstrip('/').split('/')[-1]: url for url in TODAS_AS_FILAS}
+    if fila_nome not in filas_map:
+        return {'ok': False, 'erro': f'Fila "{fila_nome}" não encontrada. Disponíveis: {list(filas_map.keys())}'}
+
+    url = filas_map[fila_nome]
+    sqs = get_sqs_client()
+    try:
+        resp = sqs.send_message(QueueUrl=url, MessageBody=mensagem)
+        return {
+            'ok': True,
+            'message_id': resp.get('MessageId'),
+            'fila': fila_nome,
+            'mensagem': mensagem,
+            'info': f'Mensagem enviada para {fila_nome}. O consumidor vai falhar 3x e ela cairá na DLQ em ~90s (ou ~15s se visibility_timeout=5s).',
+        }
+    except Exception as e:
+        return {'ok': False, 'erro': str(e)}
 
 # ── Servidor HTTP do frontend ─────────────────────────────
 
@@ -405,6 +444,29 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self._responder_json(listar_mensagens_dlq())
             return
         super().do_GET()
+
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
+
+    def do_POST(self):
+        if self.path == '/api/aws/simular-dlq':
+            tamanho = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(tamanho)
+            try:
+                dados = json.loads(body)
+                fila   = dados.get('fila', '')
+                msg    = dados.get('mensagem', 'isto nao e um json valido {{{')
+            except Exception:
+                fila, msg = '', 'mensagem invalida'
+            self._responder_json(simular_dlq(fila, msg))
+            return
+        self.send_response(404)
+        self.end_headers()
 
     def _responder_json(self, dados):
         try:

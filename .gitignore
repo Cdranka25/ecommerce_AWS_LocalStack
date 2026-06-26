@@ -10,3 +10,4 @@ venv/
 .terraform.lock.hcl
 teste.txt
 *.log
+.log

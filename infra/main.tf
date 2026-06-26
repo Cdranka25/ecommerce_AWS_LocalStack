@@ -1,6 +1,9 @@
 terraform {
   required_providers {
-    aws = { source = "hashicorp/aws", version = "~> 5.0" }
+    aws = {
+      source  = "hashicorp/aws"
+      version = "= 5.82.2"
+    }
   }
 }
 
@@ -37,10 +40,10 @@ resource "aws_sqs_queue" "filas" {
   })
 }
 
-# Bucket onde consumidores/fiscal.py salva o JSON da NF-e de cada pedido.
-# (faltava esse recurso - sem ele, o put_object do fiscal.py falhava
-# silenciosamente porque o bucket nunca existia no LocalStack)
-resource "aws_s3_bucket" "notas_fiscais" {
-  bucket = "ecommerce-notas-fiscais"
+output "filas" {
+  value = { for k, v in aws_sqs_queue.filas : k => v.url }
 }
 
+output "dlq" {
+  value = aws_sqs_queue.dlq.url
+}

@@ -19,7 +19,7 @@ function renderDLQ(dados) {
   label.textContent    = total === 1 ? "mensagem presa na DLQ" : "mensagens presas na DLQ";
 
   if (!dados.mensagens?.length) {
-    tbody.innerHTML = `<tr><td colspan="5" class="vazio">Nenhuma mensagem na DLQ — tudo processando normalmente. ✅</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="vazio">Nenhuma mensagem na DLQ — tudo processando normalmente. </td></tr>`;
     return;
   }
 
@@ -29,7 +29,7 @@ function renderDLQ(dados) {
       : m.body_raw ?? "—";
     const corBody = m.body_parsed ? "body-parsed" : "body-raw";
     const origemLabel = m.fila_origem
-      ? `<div class="fila-origem">📤 ${esc(m.fila_origem)}</div>` : "";
+      ? `<div class="fila-origem"> ${esc(m.fila_origem)}</div>` : "";
     return `<tr>
       <td style="color:var(--muted);font-size:11px">#${i+1}<br><span class="msg-id">${esc(m.message_id?.slice(0,8))}…</span></td>
       <td><span class="tentativas">${esc(m.tentativas ?? "?")}×</span></td>

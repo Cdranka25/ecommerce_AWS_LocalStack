@@ -1,33 +1,34 @@
 INFO:     Will watch for changes in these directories: ['c:\\Users\\cdran\\OneDrive - FURB\\FURB\\Outros\\Computação\\Sistemas Distribuídos\\Trabalho_Final\\ecommerce_AWS_LocalStack']
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [6032] using StatReload
-INFO:     Started server process [6856]
+INFO:     Started reloader process [13372] using StatReload
+INFO:     Started server process [13952]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     127.0.0.1:51451 - "GET /produtos HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63049 - "GET /admin/eventos?limit=60 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60534 - "GET /admin/eventos?limit=60 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50578 - "GET /docs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50578 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61328 - "GET /produtos HTTP/1.1" 200 OK
 INFO:     Will watch for changes in these directories: ['c:\\Users\\cdran\\OneDrive - FURB\\FURB\\Outros\\Computação\\Sistemas Distribuídos\\Trabalho_Final\\ecommerce_AWS_LocalStack']
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [17088] using StatReload
-INFO:     Started server process [8412]
+INFO:     Started reloader process [8268] using StatReload
+INFO:     Started server process [33656]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     127.0.0.1:64154 - "GET /produtos HTTP/1.1" 200 OK
-WARNING:  StatReload detected changes in 'launcher_server.py'. Reloading...
- INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [8412]
-INFO:     Started server process [20704]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     127.0.0.1:52636 - "GET /produtos HTTP/1.1" 200 OK
-Users\\cdran\\OneDrive - FURB\\FURB\\Outros\\Computação\\Sistemas Distribuídos\\Trabalho_Final\\ecommerce_AWS_LocalStack']
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [29480] using StatReload
-INFO:     Started server process [32712]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
+INFO:     127.0.0.1:54963 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54971 - "OPTIONS /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54971 - "GET /enderecos HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:54971 - "OPTIONS /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54971 - "POST /auth/refresh HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54971 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54971 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54971 - "GET /enderecos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54975 - "GET /frete?cep=88355-112 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54989 - "GET /produtos/f75af017-7daa-457e-b229-ef2183a394f6 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54988 - "GET /produtos/cf1313dd-a139-4573-a611-95fee3b10444 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54989 - "OPTIONS /pedidos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54988 - "OPTIONS /pedidos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54975 - "GET /frete?cep=88355-112 HTTP/1.1" 200 OK
+[>>] Pedido a1cd934f publicado em 5 filas
+INFO:     127.0.0.1:54989 - "POST /pedidos HTTP/1.1" 201 Created
+[>>] Pedido 84871552 publicado em 5 filas
+INFO:     127.0.0.1:54988 - "POST /pedidos HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55063 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55063 - "GET /produtos HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55063 - "GET /produtos HTTP/1.1" 200 OK

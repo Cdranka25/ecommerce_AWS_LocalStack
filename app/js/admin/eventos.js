@@ -49,7 +49,7 @@ function renderEventos(eventos) {
       <td class="msg-cell">
         <div class="msg-text">${esc(e.mensagem ?? "—")}</div>
         ${e.produto_nome && e.produto_nome !== "—"
-          ? `<div class="msg-produto">📦 ${esc(e.produto_nome)}${e.total ? " · R$ "+Number(e.total).toFixed(2) : ""}</div>`
+          ? `<div class="msg-produto"> ${esc(e.produto_nome)}${e.total ? " · R$ "+Number(e.total).toFixed(2) : ""}</div>`
           : ""}
       </td>
     </tr>`;

@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>TechShop — E-commerce Distribuído</title>
 <link rel="stylesheet" href="css/loja.css"/>
+  <link rel="stylesheet" href="css/melhorias.css">
 </head>
 <body>
 
 
 <!-- ══ NAVBAR ══════════════════════════════════════════════ -->
 <nav>
-  <div class="nav-brand"><span>🛒</span> TechShop</div>
+  <div class="nav-brand" onclick="showPage('produtos')" style="cursor:pointer"><span>🛒</span> TechShop</div>
   <div class="nav-links" id="nav-links">
     <button class="nav-btn" onclick="showPage('produtos')">Produtos</button>
     <button class="nav-btn" id="nav-enderecos" style="display:none" onclick="showPage('enderecos')">Endereços</button>
@@ -39,9 +40,10 @@
     </p>
   </div>
   <div class="section">
-    <div class="section-title">🖥️ Produtos disponíveis</div>
+    <div class="section-title">Produtos disponíveis</div>
+    <div id="filtros-produtos"></div>
     <div class="grid" id="grid-produtos">
-      <div class="loading-overlay"><div class="spinner"></div> Carregando produtos...</div>
+      <div class="loading-overlay" style="grid-column:1/-1"><div class="spinner"></div> Carregando produtos...</div>
     </div>
   </div>
 </div>
@@ -50,7 +52,7 @@
 <div class="page" id="page-auth">
   <div class="auth-wrap">
     <div class="auth-card">
-      <div class="auth-title">👤 Minha conta</div>
+      <div class="auth-title"> Minha conta</div>
       <div class="auth-sub">Entre ou crie sua conta para comprar</div>
       <div class="auth-tabs">
         <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Entrar</div>
@@ -98,19 +100,19 @@
 <!-- ══ PÁGINA: CARRINHO ════════════════════════════════════ -->
 <div class="page" id="page-carrinho">
   <div class="cart-page">
-    <div class="section-title">🛒 Carrinho</div>
+    <div class="section-title">Carrinho</div>
     <div id="cart-items"></div>
     <div id="cart-checkout" style="display:none">
       <!-- Seleção de endereço -->
       <div class="form-card" style="margin-top:1.25rem">
-        <div class="form-title">📍 Endereço de entrega</div>
+        <div class="form-title"> Endereço de entrega</div>
         <div class="enderecos-grid" id="cart-enderecos"></div>
         <button class="btn" onclick="showPage('enderecos')" style="font-size:12px">+ Cadastrar novo endereço</button>
       </div>
 
       <!-- Cálculo de frete -->
       <div class="form-card" style="margin-top:1rem">
-        <div class="form-title">🚚 Opções de frete</div>
+        <div class="form-title"> Opções de frete</div>
         <div id="frete-resultado">
           <p style="color:var(--muted);font-size:.875rem">Selecione um endereço para calcular o frete.</p>
         </div>
@@ -118,7 +120,7 @@
 
       <!-- Forma de pagamento -->
       <div class="form-card" style="margin-top:1rem">
-        <div class="form-title">💳 Forma de pagamento</div>
+        <div class="form-title">Forma de pagamento</div>
         <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.5rem">
           <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.875rem">
             <input type="radio" name="pagto" value="pix" checked style="accent-color:var(--accent)"> PIX (instantâneo)
@@ -140,11 +142,11 @@
       </div>
       <button class="btn btn-green" style="width:100%;margin-top:1rem;justify-content:center;font-size:1rem;padding:12px"
         onclick="finalizarPedido()" id="btn-finalizar">
-        ✅ Finalizar Pedido
+         Finalizar Pedido
       </button>
     </div>
     <div id="cart-empty" class="empty" style="display:none">
-      <div class="empty-icon">🛒</div>
+      <div class="empty-icon"></div>
       <div class="empty-text">Seu carrinho está vazio.</div>
       <button class="btn btn-primary" style="margin-top:1rem" onclick="showPage('produtos')">Ver produtos</button>
     </div>
@@ -154,7 +156,7 @@
 <!-- ══ PÁGINA: ENDEREÇOS ═══════════════════════════════════ -->
 <div class="page" id="page-enderecos">
   <div class="section">
-    <div class="section-title">📍 Meus Endereços</div>
+    <div class="section-title">Meus Enderecos</div>
     <div class="enderecos-grid" id="lista-enderecos"></div>
     <div class="form-card">
       <div class="form-title">Cadastrar novo endereço</div>
@@ -181,7 +183,7 @@
         </div>
       </div>
       <div class="form-actions">
-        <button class="btn btn-primary" onclick="salvarEndereco()">💾 Salvar endereço</button>
+        <button class="btn btn-primary" onclick="salvarEndereco()">Salvar endereço</button>
       </div>
     </div>
   </div>
@@ -190,11 +192,25 @@
 <!-- ══ PÁGINA: PEDIDOS ═════════════════════════════════════ -->
 <div class="page" id="page-pedidos">
   <div class="section">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
-      <div class="section-title" style="margin:0">📦 Meus Pedidos</div>
-      <button class="btn" onclick="carregarPedidos()" style="font-size:12px">↻ Atualizar</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div class="section-title" style="margin:0">Meus Pedidos</div>
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <div class="refresh-indicator" id="refresh-indicator" style="display:none">
+          <div class="refresh-dot"></div>
+          Atualizando...
+        </div>
+        <button class="btn" onclick="carregarPedidos()" style="font-size:12px">Atualizar</button>
+      </div>
     </div>
+    <div class="metricas-grid" id="metricas"></div>
     <div id="lista-pedidos"></div>
+  </div>
+</div>
+
+<!-- ══ PÁGINA: CONFIRMAÇÃO ══════════════════════════════════ -->
+<div class="page" id="page-confirmacao">
+  <div class="section">
+    <div id="confirmacao-content"></div>
   </div>
 </div>
 
@@ -219,8 +235,8 @@
         <button class="qty-btn" onclick="ajustarQtdModal(1)">+</button>
       </div>
     </div>
-    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="adicionarDoModal()">
-      🛒 Adicionar ao carrinho
+    <button class="btn btn-primary" id="modal-btn-add" style="width:100%;justify-content:center" onclick="adicionarDoModal()">
+      Adicionar ao carrinho
     </button>
   </div>
 </div>
